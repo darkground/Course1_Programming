@@ -26,6 +26,11 @@ void task2() {
     int number = 0;
     cout << "Input an integer: ";
     cin >> number;
+    while (cin.fail()) {
+        cin.clear(); //Clear cin.fail flag
+        cin.ignore(256, '\n'); //Clear input buffer
+        cin >> number;
+    }
     unsigned int order = sizeof(number) * 8;
     unsigned int mask = 1 << (order - 1);
 
@@ -43,8 +48,18 @@ void task2() {
     int bitV;
     cout << "Change bit... ";
     cin >> bitN;
+    while (cin.fail() || bitN < 1 || bitN > 32) {
+        cin.clear();
+        cin.ignore(256, '\n');
+        cin >> bitN;
+    }
     cout << "Change to... ";
     cin >> bitV;
+    while (cin.fail() || (bitV != 0 && bitV != 1)) {
+        cin.clear();
+        cin.ignore(256, '\n');
+        cin >> bitV;
+    }
     if (bitV == 0)
         alteredN = number & ~(1 << (32 - bitN));
     else 
@@ -74,6 +89,11 @@ void task3() {
 
     cout << "Input a float: ";
     cin >> number;
+    while (cin.fail()) {
+        cin.clear();
+        cin.ignore(256, '\n');
+        cin >> number;
+    }
     cout << "Representation in memory: ";
 
     unsigned int order = sizeof(number) * 8;
@@ -103,6 +123,11 @@ void task4() {
 
     cout << "Input a double: ";
     cin >> number;
+    while (cin.fail()) {
+        cin.clear();
+        cin.ignore(256, '\n');
+        cin >> number;
+    }
     cout << "Representation in memory: ";
 
     unsigned int order = sizeof(short int) * 8;
@@ -127,9 +152,9 @@ void task4() {
 
 int main() {
     task1();
-    while (true) {
+    //while (true) {
         task2();
         task3();
         task4();
-    }
+    //}
 }

@@ -64,31 +64,40 @@ void task3() {
         if (bit == 1 || bit == 9)
             cout << ' ';
     }
-    //
+    
     cout << endl;
 }
 
 
 /*
-*   3) Вывести на экран двоичное представление в памяти (все разряды) типа float.
-*   При выводе необходимо визуально обозначить знаковый разряд мантиссы,
+*   4) Вывести на экран двоичное представление в памяти (все разряды) типа double. 
+*   При выводе необходимо визуально обозначить знаковый разряд мантиссы, 
 *   знаковый разряд порядка (если есть), мантиссу и порядок.
 */
 void task4() {
     union {
-        double x = 1.5;
-        short int doubleSegments[4];
+        double number = 0.0;
+        short int numberSegments[4];
     };
+
+    cout << "Input a double: ";
+    cin >> number;
+    cout << "Representation in memory: ";
 
     unsigned int order = sizeof(short int) * 8;
     
     for (int memSegment = 4 - 1; memSegment >= 0; memSegment--)
     {
-        int segment = doubleSegments[memSegment];
+        int segment = numberSegments[memSegment];
         unsigned int mask = 1 << (order - 1);
         for (int bit = 1; bit <= order; bit++) {
             cout << (bool)(segment & mask);
             mask >>= 1;
+
+            // Вычисление позиции бита во всём double, а не в текущем сегменте
+            int totalBit = (3 - memSegment) * order + bit;
+            if (totalBit == 1 || totalBit == 12)
+                cout << ' ';
         }
     }
 

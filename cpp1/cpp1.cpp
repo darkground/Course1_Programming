@@ -26,8 +26,6 @@ void task2() {
     int number = 0;
     cout << "Input an integer: ";
     cin >> number;
-    cout << "Representation in memory: ";
-
     unsigned int order = sizeof(number) * 8;
     unsigned int mask = 1 << (order - 1);
 
@@ -37,7 +35,30 @@ void task2() {
         if (bit % 8 == 0 || bit == 1)
             cout << ' ';
     }
-    cout << endl;
+
+    cout << "(" << number << ")" << endl;
+    
+    int alteredN;
+    int bitN;
+    int bitV;
+    cout << "Change bit... ";
+    cin >> bitN;
+    cout << "Change to... ";
+    cin >> bitV;
+    if (bitV == 0)
+        alteredN = number & ~(1 << (32 - bitN));
+    else 
+        alteredN = number | (1 << (32 - bitN));
+
+    mask = 1 << (order - 1);
+    for (unsigned int bit = 1; bit <= order; bit++) {
+        cout << (bool)(alteredN & mask);
+        mask >>= 1;
+        if (bit % 8 == 0 || bit == 1)
+            cout << ' ';
+    }
+
+    cout << "(" << alteredN << ")" << endl;
 }
 
 /*
@@ -106,9 +127,9 @@ void task4() {
 
 int main() {
     task1();
-    //while (true) {
-        //task2();
-        //task3();
+    while (true) {
+        task2();
+        task3();
         task4();
-        //}
+    }
 }

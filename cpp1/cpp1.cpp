@@ -27,8 +27,8 @@ void task2() {
     cout << "Input an integer: ";
     cin >> number;
     while (cin.fail()) {
-        cin.clear(); //Clear cin.fail flag
-        cin.ignore(256, '\n'); //Clear input buffer
+        cin.clear(); //Убрать флаг провала у cin
+        cin.ignore(256, '\n'); //Очистить входной поток
         cin >> number;
     }
     unsigned int order = sizeof(number) * 8;

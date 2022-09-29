@@ -6,7 +6,7 @@ using namespace std;
 *   1) Вывести, сколько памяти(в байтах) на вашем компьютере отводится под различные типы данных
 *   со спецификаторами и без : int, short int, long int, float, double, long double, char и bool.
 */
-void task1() {
+void typeSizes() {
     cout << "Size of 'int': \t\t" << sizeof(int) << " bytes" << endl;
     cout << "Size of 'short int': \t" << sizeof(short int) << " bytes" << endl;
     cout << "Size of 'long int': \t" << sizeof(long int) << " bytes" << endl;
@@ -17,20 +17,7 @@ void task1() {
     cout << "Size of 'bool': \t" << sizeof(bool) << " bytes" << endl;
 }
 
-/*
-*   2) Вывести на экран двоичное представление в памяти (все разряды) целого числа.
-*   При выводе необходимо визуально обозначить знаковый разряд и значащие разряды
-*   отступами или цветом
-*/
-void task2() {
-    int number = 0;
-    cout << "Input an integer: ";
-    cin >> number;
-    while (cin.fail()) {
-        cin.clear(); //Убрать флаг провала у cin
-        cin.ignore(256, '\n'); //Очистить входной поток
-        cin >> number;
-    }
+void printInteger(int number) {
     unsigned int order = sizeof(number) * 8;
     unsigned int mask = 1 << (order - 1);
 
@@ -42,10 +29,26 @@ void task2() {
     }
 
     cout << "(" << number << ")" << endl;
+}
+
+/*
+*   2) Вывести на экран двоичное представление в памяти (все разряды) целого числа.
+*   При выводе необходимо визуально обозначить знаковый разряд и значащие разряды
+*   отступами или цветом
+*/
+void integerTask() {
+    int number = 0;
+    cout << "Input an integer: ";
+    cin >> number;
+    while (cin.fail()) { //Если ввыод был неправильного формата, то cin.fail() вернёт true
+        cin.clear(); //Убрать флаг провала у cin
+        cin.ignore(256, '\n'); //Очистить входной поток
+        cin >> number;
+    }
     
-    int alteredN;
-    int bitN;
-    int bitV;
+    printInteger(number);
+
+    int bitN, bitV;
     cout << "Change bit... ";
     cin >> bitN;
     while (cin.fail() || bitN < 1 || bitN > 32) {
@@ -61,19 +64,23 @@ void task2() {
         cin >> bitV;
     }
     if (bitV == 0)
-        alteredN = number & ~(1 << (32 - bitN));
+        number &= ~(1 << (32 - bitN));
     else 
-        alteredN = number | (1 << (32 - bitN));
+        number |= (1 << (32 - bitN));
+    
+    printInteger(number);
+}
 
-    mask = 1 << (order - 1);
+void printFloat(int sharedInt) {
+    unsigned int order = sizeof(sharedInt) * 8;
+    unsigned int mask = 1 << (order - 1);
+
     for (unsigned int bit = 1; bit <= order; bit++) {
-        cout << (bool)(alteredN & mask);
+        cout << (bool)(sharedInt & mask);
         mask >>= 1;
-        if (bit % 8 == 0 || bit == 1)
+        if (bit == 1 || bit == 9)
             cout << ' ';
     }
-
-    cout << "(" << alteredN << ")" << endl;
 }
 
 /*
@@ -81,9 +88,9 @@ void task2() {
 *   При выводе необходимо визуально обозначить знаковый разряд мантиссы,
 *   знаковый разряд порядка (если есть), мантиссу и порядок.
 */
-void task3() {
+void floatTask() {
     union {
-        float number = 0.0f;
+        float number = 0.0;
         int numberInt;
     };
 
@@ -94,19 +101,32 @@ void task3() {
         cin.ignore(256, '\n');
         cin >> number;
     }
-    cout << "Representation in memory: ";
 
-    unsigned int order = sizeof(number) * 8;
-    unsigned int mask = 1 << (order - 1);
+    printFloat(numberInt);
+    cout << " (" << number << ")" << endl;
 
-    for (unsigned int bit = 1; bit <= order; bit++) {
-        cout << (bool)(numberInt & mask);
-        mask >>= 1;
-        if (bit == 1 || bit == 9)
-            cout << ' ';
+    int bitN, bitV;
+    cout << "Change bit... ";
+    cin >> bitN;
+    while (cin.fail() || bitN < 1 || bitN > 32) {
+        cin.clear();
+        cin.ignore(256, '\n');
+        cin >> bitN;
     }
-    
-    cout << endl;
+    cout << "Change to... ";
+    cin >> bitV;
+    while (cin.fail() || (bitV != 0 && bitV != 1)) {
+        cin.clear();
+        cin.ignore(256, '\n');
+        cin >> bitV;
+    }
+    if (bitV == 0)
+        numberInt &= ~(1 << (32 - bitN));
+    else 
+        numberInt |= (1 << (32 - bitN));
+
+    printFloat(numberInt);
+    cout << " (" << number << ")" << endl;
 }
 
 
@@ -151,10 +171,40 @@ void task4() {
 }
 
 int main() {
-    task1();
-    //while (true) {
-        task2();
-        task3();
-        task4();
-    //}
+    while (true) {
+        system ("cls");
+        cout << 
+            "Choose a category from below:\n"
+            "0. Exit\n"
+            "1. Type sizes\n"
+            "2. Integer in memory\n"
+            "3. Float in memory\n"
+            "4. Double in memory\n\n";
+        cout << "Type a number to continue: ";
+        int choice;
+        cin >> choice;
+        while (cin.fail()) {
+            cin.clear();
+            cin.ignore(256, '\n');
+            cin >> choice;
+        }
+        switch (choice) {
+            case 0:
+                return 0;
+            case 1:
+                typeSizes();
+                break;
+            case 2:
+                integerTask();
+                break;
+            case 3:
+                floatTask();
+                break;
+            case 4:
+                break;
+            default:
+                cout << "\nCategory with that number does not exist." << endl;
+        }
+        system("pause");
+    }
 }

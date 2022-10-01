@@ -50,24 +50,6 @@ void printInteger(int number) {
     }
 }
 
-int changeBytes(int number) {
-    int bitN, bitV;
-    do {
-        cout << "Change bit (1-32): ";
-        bitN = readValue<int>();
-    } while (bitN < 1 || bitN > 32);
-
-    do {
-        cout << "Change to (1 or 0): ";
-        bitV = readValue<int>();
-    } while (bitV != 0 && bitV != 1);
-
-    if (bitV == 0)
-        number &= ~(1 << (32 - bitN));
-    else
-        number |= (1 << (32 - bitN));
-    return number;
-}
 /*
 *   2) Вывести на экран двоичное представление в памяти (все разряды) целого числа.
 *   При выводе необходимо визуально обозначить знаковый разряд и значащие разряды
@@ -80,9 +62,21 @@ void integerTask() {
     
     printInteger(number);
     cout << "(" << number << ")" << endl;
-    int newNumber = changeBytes(number);
-    printInteger(newNumber);
-    cout << "(" << newNumber << ")" << endl;
+      
+    while (true) {
+        char choice;
+        do {
+            cout << "Invert bytes? (y/n): ";
+            choice = readValue<char>();
+        } while (choice != 'y' && choice != 'n');
+
+        if (choice == 'y') {
+            number = ~number;
+            printInteger(number);
+            cout << "(" << number << ")" << endl;
+        }
+        else break;
+    }
 }
 
 void printFloat(int sharedInt) {
@@ -121,7 +115,20 @@ void floatTask() {
     printFloat(numberInt);
     cout << " (" << number << ")" << endl;
 
-    numberInt = changeBytes(numberInt);
+    while (true) {
+        char choice;
+        do {
+            cout << "Invert bytes? (y/n): ";
+            choice = readValue<char>();
+        } while (choice != 'y' && choice != 'n');
+
+        if (choice == 'y') {
+            numberInt = ~numberInt;
+            printFloat(numberInt);
+            cout << " (" << number << ")" << endl;
+        }
+        else break;
+    }
 
     printFloat(numberInt);
     cout << " (" << number << ")" << endl;
@@ -161,8 +168,23 @@ void doubleTask() {
     number = readValue<double>();
 
     printDouble(numberSegments);
-
     cout << " (" << number << ")" << endl;
+
+    while (true) {
+        char choice;
+        do {
+            cout << "Invert bytes? (y/n): ";
+            choice = readValue<char>();
+        } while (choice != 'y' && choice != 'n');
+
+        if (choice == 'y') {
+            for (int memSegment = 4 - 1; memSegment >= 0; memSegment--)
+                numberSegments[memSegment] = ~numberSegments[memSegment];
+            printDouble(numberSegments);
+            cout << "(" << number << ")" << endl;
+        }
+        else break;
+    }
 }
 
 int main() {

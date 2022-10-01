@@ -2,6 +2,11 @@
 
 using namespace std;
 
+/*
+*   Функция для ввода данных в терминал
+*/
+
+//При вызове функции нужно указать получаемые данные в скобках, т.е. readValue<int>() - получить число
 template <typename T>
 T readValue() {
     T value;
@@ -43,22 +48,9 @@ void printInteger(int number) {
         if (bit % 8 == 0 || bit == 1)
             cout << ' ';
     }
-
-    cout << "(" << number << ")" << endl;
 }
 
-/*
-*   2) Вывести на экран двоичное представление в памяти (все разряды) целого числа.
-*   При выводе необходимо визуально обозначить знаковый разряд и значащие разряды
-*   отступами или цветом
-*/
-void integerTask() {
-    int number = 0;
-    cout << "Input an integer: ";
-    number = readValue<int>();
-    
-    printInteger(number);
-
+int changeBytes(int number) {
     int bitN, bitV;
     do {
         cout << "Change bit (1-32): ";
@@ -72,10 +64,25 @@ void integerTask() {
 
     if (bitV == 0)
         number &= ~(1 << (32 - bitN));
-    else 
+    else
         number |= (1 << (32 - bitN));
+    return number;
+}
+/*
+*   2) Вывести на экран двоичное представление в памяти (все разряды) целого числа.
+*   При выводе необходимо визуально обозначить знаковый разряд и значащие разряды
+*   отступами или цветом
+*/
+void integerTask() {
+    int number = 0;
+    cout << "Input an integer: ";
+    number = readValue<int>();
     
     printInteger(number);
+    cout << "(" << number << ")" << endl;
+    int newNumber = changeBytes(number);
+    printInteger(newNumber);
+    cout << "(" << newNumber << ")" << endl;
 }
 
 void printFloat(int sharedInt) {
@@ -85,8 +92,15 @@ void printFloat(int sharedInt) {
     for (unsigned int bit = 1; bit <= order; bit++) {
         cout << (bool)(sharedInt & mask);
         mask >>= 1;
-        if (bit == 1 || bit == 9)
-            cout << ' ';
+            
+        if (bit <= 9) {
+            if (bit == 1 || bit == 9)
+                cout << ' ';
+        }
+        else {
+            if (bit % 4 == 1)
+                cout << ' ';
+        }
     }
 }
 
@@ -107,22 +121,29 @@ void floatTask() {
     printFloat(numberInt);
     cout << " (" << number << ")" << endl;
 
-    int bitN, bitV;
-    cout << "Change bit (1-32): ";
-    do {
-        bitN = readValue<int>();
-    } while (bitN < 1 || bitN > 32);
-    cout << "Change to (1 or 0): ";
-    do {
-        bitV = readValue<int>();
-    } while (bitV != 0 && bitV != 1);
-    if (bitV == 0)
-        numberInt &= ~(1 << (32 - bitN));
-    else 
-        numberInt |= (1 << (32 - bitN));
+    numberInt = changeBytes(numberInt);
 
     printFloat(numberInt);
     cout << " (" << number << ")" << endl;
+}
+
+void printDouble(short int numberSegments[]) {
+    unsigned int order = sizeof(short int) * 8;
+
+    for (int memSegment = 4 - 1; memSegment >= 0; memSegment--)
+    {
+        int segment = numberSegments[memSegment];
+        unsigned int mask = 1 << (order - 1);
+        for (int bit = 1; bit <= order; bit++) {
+            cout << (bool)(segment & mask);
+            mask >>= 1;
+
+            // Вычисление позиции бита во всём double, а не в текущем сегменте
+            int totalBit = (3 - memSegment) * order + bit;
+            if (totalBit == 1 || totalBit == 12)
+                cout << ' ';
+        }
+    }
 }
 
 /*
@@ -139,22 +160,7 @@ void doubleTask() {
     cout << "Input a double: ";
     number = readValue<double>();
 
-    unsigned int order = sizeof(short int) * 8;
-    
-    for (int memSegment = 4 - 1; memSegment >= 0; memSegment--)
-    {
-        int segment = numberSegments[memSegment];
-        unsigned int mask = 1 << (order - 1);
-        for (int bit = 1; bit <= order; bit++) {
-            cout << (bool)(segment & mask);
-            mask >>= 1;
-
-            // Вычисление позиции бита во всём double, а не в текущем сегменте
-            int totalBit = (3 - memSegment) * order + bit;
-            if (totalBit == 1 || totalBit == 12)
-                cout << ' ';
-        }
-    }
+    printDouble(numberSegments);
 
     cout << " (" << number << ")" << endl;
 }
@@ -171,6 +177,7 @@ int main() {
             "4. Double in memory\n\n";
         cout << "Type a number to continue: ";
         int choice = readValue<int>();
+        system("cls");
         switch (choice) {
             case 0:
                 return 0;
@@ -187,7 +194,7 @@ int main() {
                 doubleTask();
                 break;
             default:
-                cout << "\nCategory with that number does not exist." << endl;
+                cout << "\nCategory with number " << choice << " does not exist." << endl;
         }
         system("pause");
     }

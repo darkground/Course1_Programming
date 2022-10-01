@@ -2,6 +2,22 @@
 
 using namespace std;
 
+template <typename T>
+T readValue() {
+    T value;
+    while (true) {
+        cin >> value;
+        if (cin.fail()) {
+            cout << "\nExpected a number. Enter new value: ";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        } else {
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            return value;
+        }
+    }
+}
+
 /*
 *   1) Вывести, сколько памяти(в байтах) на вашем компьютере отводится под различные типы данных
 *   со спецификаторами и без : int, short int, long int, float, double, long double, char и bool.
@@ -39,30 +55,21 @@ void printInteger(int number) {
 void integerTask() {
     int number = 0;
     cout << "Input an integer: ";
-    cin >> number;
-    while (cin.fail()) { //Если ввыод был неправильного формата, то cin.fail() вернёт true
-        cin.clear(); //Убрать флаг провала у cin
-        cin.ignore(256, '\n'); //Очистить входной поток
-        cin >> number;
-    }
+    number = readValue<int>();
     
     printInteger(number);
 
     int bitN, bitV;
-    cout << "Change bit... ";
-    cin >> bitN;
-    while (cin.fail() || bitN < 1 || bitN > 32) {
-        cin.clear();
-        cin.ignore(256, '\n');
-        cin >> bitN;
-    }
-    cout << "Change to... ";
-    cin >> bitV;
-    while (cin.fail() || (bitV != 0 && bitV != 1)) {
-        cin.clear();
-        cin.ignore(256, '\n');
-        cin >> bitV;
-    }
+    do {
+        cout << "Change bit (1-32): ";
+        bitN = readValue<int>();
+    } while (bitN < 1 || bitN > 32);
+
+    do {
+        cout << "Change to (1 or 0): ";
+        bitV = readValue<int>();
+    } while (bitV != 0 && bitV != 1);
+
     if (bitV == 0)
         number &= ~(1 << (32 - bitN));
     else 
@@ -95,31 +102,20 @@ void floatTask() {
     };
 
     cout << "Input a float: ";
-    cin >> number;
-    while (cin.fail()) {
-        cin.clear();
-        cin.ignore(256, '\n');
-        cin >> number;
-    }
+    number = readValue<float>();
 
     printFloat(numberInt);
     cout << " (" << number << ")" << endl;
 
     int bitN, bitV;
-    cout << "Change bit... ";
-    cin >> bitN;
-    while (cin.fail() || bitN < 1 || bitN > 32) {
-        cin.clear();
-        cin.ignore(256, '\n');
-        cin >> bitN;
-    }
-    cout << "Change to... ";
-    cin >> bitV;
-    while (cin.fail() || (bitV != 0 && bitV != 1)) {
-        cin.clear();
-        cin.ignore(256, '\n');
-        cin >> bitV;
-    }
+    cout << "Change bit (1-32): ";
+    do {
+        bitN = readValue<int>();
+    } while (bitN < 1 || bitN > 32);
+    cout << "Change to (1 or 0): ";
+    do {
+        bitV = readValue<int>();
+    } while (bitV != 0 && bitV != 1);
     if (bitV == 0)
         numberInt &= ~(1 << (32 - bitN));
     else 
@@ -129,26 +125,19 @@ void floatTask() {
     cout << " (" << number << ")" << endl;
 }
 
-
 /*
 *   4) Вывести на экран двоичное представление в памяти (все разряды) типа double. 
 *   При выводе необходимо визуально обозначить знаковый разряд мантиссы, 
 *   знаковый разряд порядка (если есть), мантиссу и порядок.
 */
-void task4() {
+void doubleTask() {
     union {
         double number = 0.0;
         short int numberSegments[4];
     };
 
     cout << "Input a double: ";
-    cin >> number;
-    while (cin.fail()) {
-        cin.clear();
-        cin.ignore(256, '\n');
-        cin >> number;
-    }
-    cout << "Representation in memory: ";
+    number = readValue<double>();
 
     unsigned int order = sizeof(short int) * 8;
     
@@ -167,7 +156,7 @@ void task4() {
         }
     }
 
-    cout << endl;
+    cout << " (" << number << ")" << endl;
 }
 
 int main() {
@@ -181,13 +170,7 @@ int main() {
             "3. Float in memory\n"
             "4. Double in memory\n\n";
         cout << "Type a number to continue: ";
-        int choice;
-        cin >> choice;
-        while (cin.fail()) {
-            cin.clear();
-            cin.ignore(256, '\n');
-            cin >> choice;
-        }
+        int choice = readValue<int>();
         switch (choice) {
             case 0:
                 return 0;
@@ -201,6 +184,7 @@ int main() {
                 floatTask();
                 break;
             case 4:
+                doubleTask();
                 break;
             default:
                 cout << "\nCategory with that number does not exist." << endl;

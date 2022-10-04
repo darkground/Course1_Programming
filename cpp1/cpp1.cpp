@@ -1,4 +1,5 @@
 ﻿#include <iostream>
+#include <limits>
 
 using namespace std;
 
@@ -13,7 +14,7 @@ T readValue() {
     while (true) {
         cin >> value;
         if (cin.fail()) {
-            cout << "\nExpected a number. Enter new value: ";
+            cout << "\nIncorrect input. Enter new value: ";
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
         } else {

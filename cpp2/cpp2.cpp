@@ -29,20 +29,6 @@ T readValue() {
     }
 }
 
-/*
-*   Функция для измерения выполнения переданной функции в миллисекундах.
-*/
-
-// Передавать в эту функцию нужно адрес функции, например, чтобы измерить функцию hello():
-// double result = measure(&hello);
-double measure(void (*function)()){
-    steady_clock::time_point t1 = high_resolution_clock::now();
-    function();
-    steady_clock::time_point t2 = high_resolution_clock::now();
-    duration<double, milli> result = t2 - t1;
-    return result.count();
-}
-
 void printArray(int* array) {
     for(int i = 0; i < 100; i++) {
         cout << array[i] << endl;
@@ -53,7 +39,6 @@ void step1(int* array) {
     for(int i = 0; i < 100; i++) {
         array[i] = -99 + (rand() * (int)(99 - (-99)) / RAND_MAX);
     }
-    cout << "Generated new array (N=100)." << endl;
 }
 
 void step2(int* array, int ptStart, int ptEnd)
@@ -97,6 +82,7 @@ int main() {
             case 1: 
                 step1(array);
                 sortedIndicator = false;
+                cout << "Generated new array (N=100)." << endl;
                 break;
             case 2: {
                 steady_clock::time_point t1 = high_resolution_clock::now();

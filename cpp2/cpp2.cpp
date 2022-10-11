@@ -33,7 +33,7 @@ T readValue() {
 *   Функция для измерения выполнения переданной функции в миллисекундах.
 */
 
-// Передавать в эту функцию нужно адрес функции, например, чтобы измерить hello():
+// Передавать в эту функцию нужно адрес функции, например, чтобы измерить функцию hello():
 // double result = measure(&hello);
 double measure(void (*function)()){
     steady_clock::time_point t1 = high_resolution_clock::now();
@@ -43,28 +43,51 @@ double measure(void (*function)()){
     return result.count();
 }
 
-void sort1() {
-
-}
-
-void sort2() {
-
-}
-
-void ccout() {
-    for (int i = 0; i < 100; i++) {
-        cout << i + 1 << endl;
+void printArray(int* array) {
+    for(int i = 0; i < 100; i++) {
+        cout << array[i] << endl;
     }
-    cout << "Complete." << endl;
+}
+
+void step1(int* array) {
+    for(int i = 0; i < 100; i++) {
+        array[i] = -99 + (rand() * (int)(99 - (-99)) / RAND_MAX);
+    }
+    cout << "Generated new array (N=100)." << endl;
+}
+
+void step2(int* array, int ptStart, int ptEnd)
+{
+	int lb = ptStart; //Левый край (left bound)
+	int rb = ptEnd; //Правый край (right bound)
+	int anchor = array[(lb + rb)/ 2]; //Опорная точка
+	while (lb < rb)
+	{
+		while (array[lb] < anchor) lb++;
+		while (array[rb]> anchor) rb--;
+		if (lb <= rb)
+		{
+			swap(array[lb], array[rb]);
+			lb++;
+			rb--;
+		}
+	}
+	if (ptStart < rb) step2(array, ptStart, rb);
+	if (lb < ptEnd) step2(array, lb, ptEnd);
 }
 
 int main() {
+    int array[100] {};
+    bool sortedIndicator = false;
+    step1(array);
     while (true) {
         system("cls");
+        cout << "Array state: " << (sortedIndicator ? "sorted" : "not sorted") << "\n\n";
         cout <<
             "Choose a category from below:\n"
             "0. Exit\n"
-            "1. Sort\n";
+            "1. Generate new array\n"
+            "2. Quick-sort array\n";
         cout << "Type a number to continue: ";
         int choice = readValue<int>();
         system("cls");
@@ -72,7 +95,17 @@ int main() {
             case 0:
                 return 0;
             case 1: 
-                cout << "measure (ms): " << measure(&ccout) << endl;
+                step1(array);
+                sortedIndicator = false;
+                break;
+            case 2: {
+                steady_clock::time_point t1 = high_resolution_clock::now();
+                step2(array, 0, 99);
+                steady_clock::time_point t2 = high_resolution_clock::now();
+                duration<double, milli> result = t2 - t1;
+                sortedIndicator = true;
+                cout << "Sorted array, it took " << result.count() << " milliseconds" << endl;
+            }
                 break;
             default:
                 cout << "\nCategory with number " << choice << " does not exist." << endl;

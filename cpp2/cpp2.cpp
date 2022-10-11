@@ -31,7 +31,7 @@ T readValue() {
 
 void printArray(int* array) {
     for(int i = 0; i < 100; i++) {
-        cout << array[i] << endl;
+        cout << "Array[" << i << "] = " << array[i] << endl;
     }
 }
 
@@ -67,30 +67,78 @@ int main() {
     step1(array);
     while (true) {
         system("cls");
-        cout << "Array state: " << (sortedIndicator ? "sorted" : "not sorted") << "\n\n";
+        cout << "Array state: " << (sortedIndicator ? "SORTED" : "UNSORTED") << "\n\n";
         cout <<
             "Choose a category from below:\n"
             "0. Exit\n"
-            "1. Generate new array\n"
-            "2. Quick-sort array\n";
+            "1. Print array\n"
+            "2. Generate new array\n"
+            "3. Quick-sort array\n"
+            "4. Min, max, average values in array\n"
+            "5. Count values that are more than N\n"
+            "6. Count values that are less than N\n\n";
         cout << "Type a number to continue: ";
         int choice = readValue<int>();
-        system("cls");
+        cout << endl;
         switch (choice) {
             case 0:
                 return 0;
-            case 1: 
+            case 1:
+                printArray(array);
+                break;
+            case 2: 
                 step1(array);
                 sortedIndicator = false;
-                cout << "Generated new array (N=100)." << endl;
+                cout << "Generated new array with 100 elements in range [-99, 99]." << endl;
                 break;
-            case 2: {
+            case 3: {
                 steady_clock::time_point t1 = high_resolution_clock::now();
                 step2(array, 0, 99);
                 steady_clock::time_point t2 = high_resolution_clock::now();
                 duration<double, milli> result = t2 - t1;
                 sortedIndicator = true;
-                cout << "Sorted array, it took " << result.count() << " milliseconds" << endl;
+                cout << "Sorted array, it took " << result.count() << " milliseconds." << endl;
+            }
+                break;
+            case 4: {
+                steady_clock::time_point t1 = high_resolution_clock::now();
+                int maxValue = array[0];
+                int minValue = array[0];
+                for(int i = 1; i < 100; i++) {    
+                    if (array[i] > maxValue)
+                        maxValue = array[i];
+                    if (array[i] < minValue)
+                            minValue = array[i];
+                }
+                steady_clock::time_point t2 = high_resolution_clock::now();
+                duration<double, milli> result = t2 - t1;
+                cout << "Finding min and max values in " << (sortedIndicator ? "SORTED" : "UNSORTED") <<
+                    " array took " << result.count() << " milliseconds." << endl;
+                cout << "Min: " << minValue << endl;
+                cout << "Max: " << maxValue << endl;
+                cout << "Average: " << (minValue + maxValue) / 2 << endl;
+            }
+                break;
+            case 5: {
+                cout << "Input a number N: ";
+                int number = readValue<int>();
+                int count = 0;
+                for(int i = 0; i < 100; i++) {    
+                    if (array[i] > number)
+                        count++;
+                }
+                cout << "There are " << count << " values more than " << number << "." << endl;
+            }
+                break;
+            case 6: {
+                cout << "Input a number N: ";
+                int number = readValue<int>();
+                int count = 0;
+                for(int i = 0; i < 100; i++) {    
+                    if (array[i] < number)
+                        count++;
+                }
+                cout << "There are " << count << " values less than " << number << "." << endl;
             }
                 break;
             default:

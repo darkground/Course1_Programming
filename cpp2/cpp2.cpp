@@ -218,6 +218,7 @@ int main() {
                 swap(array[index1], array[index2]);
                 steady_clock::time_point bt2 = high_resolution_clock::now();
                 duration<double, milli> bresult = bt2 - bt1;
+                sortedIndicator = false; // Чтобы бинарный поиск не выдал неверных результатов.
                 cout << "Swapping took " << bresult.count() << " milliseconds." << endl;
             }
                 break;

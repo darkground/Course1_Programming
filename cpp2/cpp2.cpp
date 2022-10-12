@@ -102,7 +102,8 @@ int main() {
             "4. Min, max, average values in array\n"
             "5. Count values that are more than N\n"
             "6. Count values that are less than N\n"
-            "7. Find a value using binary search\n\n";
+            "7. Find a value using binary search\n"
+            "8. Swap values by index\n\n";
         cout << "Type a number to continue: ";
         int choice = readValue<int>();
         cout << endl;
@@ -196,6 +197,30 @@ int main() {
                 cout << " (took " << dresult.count() << " milliseconds)" << endl;
             }
                   break;
+            case 8: {
+                int index1 = 0;
+                do {
+                    cout << "Input an index N1: ";
+                    index1 = readValue<int>();
+                } while (index1 < 0 || index1 > 99);                
+                
+                int index2 = 0;
+                do {
+                    cout << "Input an index N2: ";
+                    index2 = readValue<int>();
+                } while (index2 < 0 || index2 > 99);
+                
+                if (index1 == index2) {
+                    cout << "Error, indexes are the same" << endl;
+                    break;
+                }
+                steady_clock::time_point bt1 = high_resolution_clock::now();
+                swap(array[index1], array[index2]);
+                steady_clock::time_point bt2 = high_resolution_clock::now();
+                duration<double, milli> bresult = bt2 - bt1;
+                cout << "Swapping took " << bresult.count() << " milliseconds." << endl;
+            }
+                break;
             default:
                 cout << "\nCategory with number " << choice << " does not exist." << endl;
         }

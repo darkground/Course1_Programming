@@ -61,6 +61,31 @@ void step2(int* array, int ptStart, int ptEnd)
 	if (lb < ptEnd) step2(array, lb, ptEnd);
 }
 
+int step7binary(int* array, int value) {
+    int low = 0;
+    int mid = 0;
+    int high = 99;
+    while (low <= high) {
+        mid = low + (high - low) / 2;
+        if (value == array[mid])
+            return mid;
+        
+        if (value > array[mid])
+            low = mid + 1; //Для смещения mid направо на следующей итерации поиска
+        else
+            high = mid - 1; //Для смещения mid налево на следующей итерации поиска
+    };
+    return -1; //Значение не найдено
+}
+
+int step7default(int* array, int value) {
+    for(int i = 0; i < 100; i++) {
+        if (array[i] == value)
+            return i;
+    }
+    return -1; //Значение не найдено
+}
+
 int main() {
     int array[100] {};
     bool sortedIndicator = false;
@@ -76,7 +101,8 @@ int main() {
             "3. Quick-sort array\n"
             "4. Min, max, average values in array\n"
             "5. Count values that are more than N\n"
-            "6. Count values that are less than N\n\n";
+            "6. Count values that are less than N\n"
+            "7. Find a value using binary search\n\n";
         cout << "Type a number to continue: ";
         int choice = readValue<int>();
         cout << endl;
@@ -141,6 +167,35 @@ int main() {
                 cout << "There are " << count << " values less than " << number << "." << endl;
             }
                 break;
+            case 7: {
+                if (!sortedIndicator) {
+                    cout << "Array should be sorted before using binary search!" << endl;
+                    break;
+                }
+                cout << "Input a number N: ";
+                int number = readValue<int>();
+                cout << "-- Binary search --" << endl;
+                steady_clock::time_point bt1 = high_resolution_clock::now();
+                int bvalIndex = step7binary(array, number);
+                steady_clock::time_point bt2 = high_resolution_clock::now();
+                duration<double, milli> bresult = bt2 - bt1;
+                if (bvalIndex == -1)
+                    cout << "Value was not found!";
+                else 
+                    cout << "Value's index: " << bvalIndex;
+                cout << " (took " << bresult.count() << " milliseconds)" << endl;
+                cout << "-- Default search --" << endl;
+                steady_clock::time_point dt1 = high_resolution_clock::now();
+                int dvalIndex = step7default(array, number);
+                steady_clock::time_point dt2 = high_resolution_clock::now();
+                duration<double, milli> dresult = dt2 - dt1;
+                if (dvalIndex == -1)
+                    cout << "Value was not found!";
+                else 
+                    cout << "Value's index: " << dvalIndex;
+                cout << " (took " << dresult.count() << " milliseconds)" << endl;
+            }
+                  break;
             default:
                 cout << "\nCategory with number " << choice << " does not exist." << endl;
         }

@@ -5,7 +5,7 @@
 using namespace std;
 using namespace chrono;
 
-const int N = 100;
+const int N = 120;
 
 /*
 *   Функция для ввода данных в терминал
@@ -44,7 +44,6 @@ void step1(int* array) {
         array[i] = rand() % 100 - 50;
     }
 }
-
 
 void step2(int* array, int ptStart, int ptEnd)
 {
@@ -101,7 +100,7 @@ int main() {
     while (true) {
         system("cls");
         printArray(array);
-        cout << "Array state: " << (sortedIndicator ? "SORTED" : "UNSORTED") << "\n\n";
+        cout << "Array: N = " << N << ", " << (sortedIndicator ? "SORTED" : "UNSORTED") << "\n\n";
         cout <<
             "Choose a category from below:\n"
             "0. Exit\n"

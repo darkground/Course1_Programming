@@ -38,11 +38,13 @@ void printArray(int* array) {
     cout << endl;
 }
 
+// Заполнение массива случайными числами
 void step1(int* array) {
     for(int i = 0; i < N; i++) {
         array[i] = rand() % 100 - 50;
     }
 }
+
 
 void step2(int* array, int ptStart, int ptEnd)
 {
@@ -64,6 +66,7 @@ void step2(int* array, int ptStart, int ptEnd)
 	if (lb < ptEnd) step2(array, lb, ptEnd);
 }
 
+//Бинарный поиск индекса числа
 int step7binary(int* array, int value) {
     int low = 0;
     int mid = 0;
@@ -81,6 +84,7 @@ int step7binary(int* array, int value) {
     return -1; //Значение не найдено
 }
 
+//Обычный поиск индекса числа
 int step7default(int* array, int value) {
     for(int i = 0; i < N; i++) {
         if (array[i] == value)
@@ -106,7 +110,7 @@ int main() {
             "3. Min, max, average values in array\n"
             "4. Count values that are more than N\n"
             "5. Count values that are less than N\n"
-            "6. Find a value using binary search\n"
+            "6. Find a value\n"
             "7. Swap values by index\n\n";
         cout << "Type a number to continue: ";
         int choice = readValue<int>();
@@ -129,19 +133,27 @@ int main() {
             }
                 break;
             case 3: {
-                auto t1 = steady_clock::now();
                 int maxValue = array[0];
                 int minValue = array[0];
-                for(int i = 1; i < 100; i++) {    
-                    if (array[i] > maxValue)
-                        maxValue = array[i];
-                    if (array[i] < minValue)
-                            minValue = array[i];
+                if (sortedIndicator) {   
+                    auto t1 = steady_clock::now();
+                    maxValue = array[N-1];
+                    minValue = array[0];
+                    auto t2 = steady_clock::now();
+                    auto result = duration_cast<nanoseconds>(t2 - t1);
+                    cout << "Finding min and max values in SORTED array took " << result.count() << " nanoseconds." << endl; 
+                } else {
+                    auto t1 = steady_clock::now();
+                    for(int i = 1; i < N; i++) {    
+                        if (array[i] > maxValue)
+                            maxValue = array[i];
+                        if (array[i] < minValue)
+                                minValue = array[i];
+                    }
+                    auto t2 = steady_clock::now();
+                    auto result = duration_cast<nanoseconds>(t2 - t1);
+                    cout << "Finding min and max values in UNSORTED array took " << result.count() << " nanoseconds." << endl; 
                 }
-                auto t2 = steady_clock::now();
-                auto result = duration_cast<nanoseconds>(t2 - t1);
-                cout << "Finding min and max values in " << (sortedIndicator ? "SORTED" : "UNSORTED") <<
-                    " array took " << result.count() << " nanoseconds." << endl;
                 cout << "Min: " << minValue << endl;
                 cout << "Max: " << maxValue << endl;
                 cout << "Average: " << (minValue + maxValue) / 2 << endl;
@@ -170,22 +182,22 @@ int main() {
             }
                 break;
             case 6: {
-                if (!sortedIndicator) {
-                    cout << "Array should be sorted before using binary search!" << endl;
-                    break;
-                }
                 cout << "Input a number N: ";
                 int number = readValue<int>();
                 cout << "Binary search -- ";
-                auto bt1 = steady_clock::now();
-                int bvalIndex = step7binary(array, number);
-                auto bt2 = steady_clock::now();
-                auto bresult = duration_cast<nanoseconds>(bt2 - bt1);
-                if (bvalIndex == -1)
-                    cout << "Value was not found!";
-                else 
-                    cout << "Value's index: " << bvalIndex;
-                cout << " (took " << bresult.count() << " nanoseconds)" << endl;
+                if (sortedIndicator){
+                    auto bt1 = steady_clock::now();
+                    int bvalIndex = step7binary(array, number);
+                    auto bt2 = steady_clock::now();
+                    auto bresult = duration_cast<nanoseconds>(bt2 - bt1);
+                    if (bvalIndex == -1)
+                        cout << "Value was not found!";
+                    else 
+                        cout << "Value's index: " << bvalIndex;
+                    cout << " (took " << bresult.count() << " nanoseconds)" << endl;
+                }
+                else cout << "Array is not sorted!" << endl;
+
                 cout << "Default search -- ";
                 auto dt1 = steady_clock::now();
                 int dvalIndex = step7default(array, number);

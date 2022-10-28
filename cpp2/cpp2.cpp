@@ -5,6 +5,8 @@
 using namespace std;
 using namespace chrono;
 
+const int N = 100;
+
 /*
 *   Функция для ввода данных в терминал
 */
@@ -30,14 +32,15 @@ T readValue() {
 }
 
 void printArray(int* array) {
-    for(int i = 0; i < 100; i++) {
-        cout << "Array[" << i << "] = " << array[i] << endl;
+    for(int i = 0; i < N; i++) {
+        cout << array[i] << ' ';
     }
+    cout << endl;
 }
 
 void step1(int* array) {
-    for(int i = 0; i < 100; i++) {
-        array[i] = -99 + (rand() * (int)(99 - (-99)) / RAND_MAX);
+    for(int i = 0; i < N; i++) {
+        array[i] = rand() % 100 - 50;
     }
 }
 
@@ -64,7 +67,7 @@ void step2(int* array, int ptStart, int ptEnd)
 int step7binary(int* array, int value) {
     int low = 0;
     int mid = 0;
-    int high = 99;
+    int high = N - 1;
     while (low <= high) {
         mid = low + (high - low) / 2;
         if (value == array[mid])
@@ -79,7 +82,7 @@ int step7binary(int* array, int value) {
 }
 
 int step7default(int* array, int value) {
-    for(int i = 0; i < 100; i++) {
+    for(int i = 0; i < N; i++) {
         if (array[i] == value)
             return i;
     }
@@ -87,48 +90,46 @@ int step7default(int* array, int value) {
 }
 
 int main() {
-    int array[100] {};
+    srand(time(0));
+    int array[N] {};
     bool sortedIndicator = false;
     step1(array);
     while (true) {
         system("cls");
+        printArray(array);
         cout << "Array state: " << (sortedIndicator ? "SORTED" : "UNSORTED") << "\n\n";
         cout <<
             "Choose a category from below:\n"
             "0. Exit\n"
-            "1. Print array\n"
-            "2. Generate new array\n"
-            "3. Quick-sort array\n"
-            "4. Min, max, average values in array\n"
-            "5. Count values that are more than N\n"
-            "6. Count values that are less than N\n"
-            "7. Find a value using binary search\n"
-            "8. Swap values by index\n\n";
+            "1. Generate new array\n"
+            "2. Quick-sort array\n"
+            "3. Min, max, average values in array\n"
+            "4. Count values that are more than N\n"
+            "5. Count values that are less than N\n"
+            "6. Find a value using binary search\n"
+            "7. Swap values by index\n\n";
         cout << "Type a number to continue: ";
         int choice = readValue<int>();
         cout << endl;
         switch (choice) {
             case 0:
                 return 0;
-            case 1:
-                printArray(array);
-                break;
-            case 2: 
+            case 1: 
                 step1(array);
                 sortedIndicator = false;
-                cout << "Generated new array with 100 elements in range [-99, 99]." << endl;
+                cout << "Generated new array with 100 elements in range [-50, 50]." << endl;
                 break;
-            case 3: {
-                steady_clock::time_point t1 = high_resolution_clock::now();
+            case 2: {
+                auto t1 = steady_clock::now();
                 step2(array, 0, 99);
-                steady_clock::time_point t2 = high_resolution_clock::now();
-                duration<double, milli> result = t2 - t1;
+                auto t2 = steady_clock::now();
+                auto result = duration_cast<nanoseconds>(t2 - t1);
                 sortedIndicator = true;
-                cout << "Sorted array, it took " << result.count() << " milliseconds." << endl;
+                cout << "Sorted array, it took " << result.count() << " nanoseconds." << endl;
             }
                 break;
-            case 4: {
-                steady_clock::time_point t1 = high_resolution_clock::now();
+            case 3: {
+                auto t1 = steady_clock::now();
                 int maxValue = array[0];
                 int minValue = array[0];
                 for(int i = 1; i < 100; i++) {    
@@ -137,16 +138,16 @@ int main() {
                     if (array[i] < minValue)
                             minValue = array[i];
                 }
-                steady_clock::time_point t2 = high_resolution_clock::now();
-                duration<double, milli> result = t2 - t1;
+                auto t2 = steady_clock::now();
+                auto result = duration_cast<nanoseconds>(t2 - t1);
                 cout << "Finding min and max values in " << (sortedIndicator ? "SORTED" : "UNSORTED") <<
-                    " array took " << result.count() << " milliseconds." << endl;
+                    " array took " << result.count() << " nanoseconds." << endl;
                 cout << "Min: " << minValue << endl;
                 cout << "Max: " << maxValue << endl;
                 cout << "Average: " << (minValue + maxValue) / 2 << endl;
             }
                 break;
-            case 5: {
+            case 4: {
                 cout << "Input a number N: ";
                 int number = readValue<int>();
                 int count = 0;
@@ -157,7 +158,7 @@ int main() {
                 cout << "There are " << count << " values more than " << number << "." << endl;
             }
                 break;
-            case 6: {
+            case 5: {
                 cout << "Input a number N: ";
                 int number = readValue<int>();
                 int count = 0;
@@ -168,36 +169,36 @@ int main() {
                 cout << "There are " << count << " values less than " << number << "." << endl;
             }
                 break;
-            case 7: {
+            case 6: {
                 if (!sortedIndicator) {
                     cout << "Array should be sorted before using binary search!" << endl;
                     break;
                 }
                 cout << "Input a number N: ";
                 int number = readValue<int>();
-                cout << "-- Binary search --" << endl;
-                steady_clock::time_point bt1 = high_resolution_clock::now();
+                cout << "Binary search -- ";
+                auto bt1 = steady_clock::now();
                 int bvalIndex = step7binary(array, number);
-                steady_clock::time_point bt2 = high_resolution_clock::now();
-                duration<double, milli> bresult = bt2 - bt1;
+                auto bt2 = steady_clock::now();
+                auto bresult = duration_cast<nanoseconds>(bt2 - bt1);
                 if (bvalIndex == -1)
                     cout << "Value was not found!";
                 else 
                     cout << "Value's index: " << bvalIndex;
-                cout << " (took " << bresult.count() << " milliseconds)" << endl;
-                cout << "-- Default search --" << endl;
-                steady_clock::time_point dt1 = high_resolution_clock::now();
+                cout << " (took " << bresult.count() << " nanoseconds)" << endl;
+                cout << "Default search -- ";
+                auto dt1 = steady_clock::now();
                 int dvalIndex = step7default(array, number);
-                steady_clock::time_point dt2 = high_resolution_clock::now();
-                duration<double, milli> dresult = dt2 - dt1;
+                auto dt2 = steady_clock::now();
+                auto dresult = duration_cast<nanoseconds>(dt2 - dt1);
                 if (dvalIndex == -1)
                     cout << "Value was not found!";
                 else 
                     cout << "Value's index: " << dvalIndex;
-                cout << " (took " << dresult.count() << " milliseconds)" << endl;
+                cout << " (took " << dresult.count() << " nanoseconds)" << endl;
             }
                   break;
-            case 8: {
+            case 7: {
                 int index1 = 0;
                 do {
                     cout << "Input an index N1: ";
@@ -214,12 +215,12 @@ int main() {
                     cout << "Error, indexes are the same" << endl;
                     break;
                 }
-                steady_clock::time_point bt1 = high_resolution_clock::now();
+                auto t1 = high_resolution_clock::now();
                 swap(array[index1], array[index2]);
-                steady_clock::time_point bt2 = high_resolution_clock::now();
-                duration<double, milli> bresult = bt2 - bt1;
+                auto t2 = high_resolution_clock::now();
+                auto result = duration_cast<nanoseconds>(t2 - t1);
                 sortedIndicator = false; // Чтобы бинарный поиск не выдал неверных результатов.
-                cout << "Swapping took " << bresult.count() << " milliseconds." << endl;
+                cout << "Swapping took " << result.count() << " milliseconds." << endl;
             }
                 break;
             default:

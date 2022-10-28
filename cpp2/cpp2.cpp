@@ -215,24 +215,24 @@ int main() {
                 do {
                     cout << "Input an index N1: ";
                     index1 = readValue<int>();
-                } while (index1 < 0 || index1 > 99);                
+                } while (index1 < 0 || index1 > N - 1);                
                 
                 int index2 = 0;
                 do {
                     cout << "Input an index N2: ";
                     index2 = readValue<int>();
-                } while (index2 < 0 || index2 > 99);
+                } while (index2 < 0 || index2 > N - 1);
                 
                 if (index1 == index2) {
                     cout << "Error, indexes are the same" << endl;
                     break;
                 }
-                auto t1 = high_resolution_clock::now();
+                auto t1 = steady_clock::now();
                 swap(array[index1], array[index2]);
-                auto t2 = high_resolution_clock::now();
+                auto t2 = steady_clock::now();
                 auto result = duration_cast<nanoseconds>(t2 - t1);
-                sortedIndicator = false; // Чтобы бинарный поиск не выдал неверных результатов.
-                cout << "Swapping took " << result.count() << " milliseconds." << endl;
+                sortedIndicator = false;
+                cout << "Swapping took " << result.count() << " nanoseconds." << endl;
             }
                 break;
             default:

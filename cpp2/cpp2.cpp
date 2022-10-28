@@ -5,7 +5,7 @@
 using namespace std;
 using namespace chrono;
 
-const int N = 120;
+const int N = 100;
 
 /*
 *   Функция для ввода данных в терминал
@@ -31,21 +31,15 @@ T readValue() {
     }
 }
 
-void printArray(int* array) {
-    for(int i = 0; i < N; i++) {
-        cout << array[i] << ' ';
-    }
-    cout << endl;
-}
-
-// Заполнение массива случайными числами
+//Заполнение массива случайными числами
 void step1(int* array) {
     for(int i = 0; i < N; i++) {
-        array[i] = rand() % 100 - 50;
+        array[i] = rand() % 199 - 99;
     }
 }
 
-void step2(int* array, int ptStart, int ptEnd)
+//Быстрая сортировка
+void step2_quick(int* array, int ptStart, int ptEnd)
 {
 	int lb = ptStart; //Левый край (left bound)
 	int rb = ptEnd; //Правый край (right bound)
@@ -61,8 +55,75 @@ void step2(int* array, int ptStart, int ptEnd)
 			rb--;
 		}
 	}
-	if (ptStart < rb) step2(array, ptStart, rb);
-	if (lb < ptEnd) step2(array, lb, ptEnd);
+	if (ptStart < rb) step2_quick(array, ptStart, rb);
+	if (lb < ptEnd) step2_quick(array, lb, ptEnd);
+}
+
+//Пузырьковая сортировка
+void step2_bubble(int* array) {
+    for(int i = 0; i < N - 1; i++) {
+        bool flag = true;
+        for (int j = 0; j < N - i - 1; j++) {
+            if(array[j] > array[j + 1]) {
+                flag = false;
+                swap(array[j], array[j + 1]);
+            }
+        }
+        if (flag)
+            break;
+    }
+}
+
+//Сортировка вставками
+void step2_insert(int* array) {
+    for(int i = 1; i < N; i++) {
+        for(int j = i; j > 0 && array[j - 1] > array[j]; j--) {
+            swap(array[j - 1], array[j]);
+        }
+    }
+}
+
+//Сортировка расчёской
+void step2_comb(int* array) {
+    const float K = 1.247; //Коэффициент уменьшения
+    float S = N - 1; //Расстояние
+    while(S >= 1) {
+        for (int i = 0; i + S < N; i++) {
+            if (array[i] > array[int(i + S)]) {
+                swap(array[i], array[int(i + S)]);
+            }
+        }
+        S /= K;
+    }
+    step2_bubble(array);
+}
+
+//Сортировка шейкер
+void step2_shaker(int* array) {
+    int lb = 0;
+    int rb = N - 1;
+    bool changed = true;
+    while(changed) {
+        changed = false;
+        for(int i = lb; i < rb; i++) {
+            if (array[i] > array[i + 1]) {
+                swap(array[i], array[i + 1]);
+                changed = true;
+            }
+        }
+
+        if (!changed)
+            break;
+        rb--;
+
+        for(int i = rb - 1; i >= lb; i--) {
+            if (array[i] > array[i + 1]) {
+                swap(array[i], array[i + 1]);
+                changed = true;
+            }
+        }
+        lb++;
+    }
 }
 
 //Бинарный поиск индекса числа
@@ -99,18 +160,24 @@ int main() {
     step1(array);
     while (true) {
         system("cls");
-        printArray(array);
-        cout << "Array: N = " << N << ", " << (sortedIndicator ? "SORTED" : "UNSORTED") << "\n\n";
+        for(int i = 0; i < N; i++) {
+            cout << array[i] << ' ';
+        }
+        cout << "\nArray: N = " << N << ", " << (sortedIndicator ? "SORTED" : "UNSORTED") << "\n\n";
         cout <<
             "Choose a category from below:\n"
             "0. Exit\n"
             "1. Generate new array\n"
-            "2. Quick-sort array\n"
-            "3. Min, max, average values in array\n"
-            "4. Count values that are more than N\n"
-            "5. Count values that are less than N\n"
-            "6. Find a value\n"
-            "7. Swap values by index\n\n";
+            "2. Sort array using Quick Sort\n"
+            "3. Sort array using Bubble Sort\n"
+            "4. Sort array using Comb Sort\n"
+            "5. Sort array using Insert Sort\n"
+            "6. Sort array using Shaker Sort\n"
+            "7. Min, max, average values in array\n"
+            "8. Count values that are more than N\n"
+            "9. Count values that are less than N\n"
+            "10. Find a value\n"
+            "11. Swap values by index\n\n";
         cout << "Type a number to continue: ";
         int choice = readValue<int>();
         cout << endl;
@@ -120,11 +187,11 @@ int main() {
             case 1: 
                 step1(array);
                 sortedIndicator = false;
-                cout << "Generated new array with 100 elements in range [-50, 50]." << endl;
+                cout << "Generated new array with 100 elements in range [-99, 99]." << endl;
                 break;
             case 2: {
                 auto t1 = steady_clock::now();
-                step2(array, 0, 99);
+                step2_quick(array, 0, N - 1);
                 auto t2 = steady_clock::now();
                 auto result = duration_cast<nanoseconds>(t2 - t1);
                 sortedIndicator = true;
@@ -132,6 +199,42 @@ int main() {
             }
                 break;
             case 3: {
+                auto t1 = steady_clock::now();
+                step2_bubble(array);
+                auto t2 = steady_clock::now();
+                auto result = duration_cast<nanoseconds>(t2 - t1);
+                sortedIndicator = true;
+                cout << "Sorted array, it took " << result.count() << " nanoseconds." << endl;
+            }
+                break;
+            case 4: {
+                auto t1 = steady_clock::now();
+                step2_comb(array);
+                auto t2 = steady_clock::now();
+                auto result = duration_cast<nanoseconds>(t2 - t1);
+                sortedIndicator = true;
+                cout << "Sorted array, it took " << result.count() << " nanoseconds." << endl;
+            }
+                break;
+            case 5: {
+                auto t1 = steady_clock::now();
+                step2_insert(array);
+                auto t2 = steady_clock::now();
+                auto result = duration_cast<nanoseconds>(t2 - t1);
+                sortedIndicator = true;
+                cout << "Sorted array, it took " << result.count() << " nanoseconds." << endl;
+            }
+                break;
+            case 6: {
+                auto t1 = steady_clock::now();
+                step2_shaker(array);
+                auto t2 = steady_clock::now();
+                auto result = duration_cast<nanoseconds>(t2 - t1);
+                sortedIndicator = true;
+                cout << "Sorted array, it took " << result.count() << " nanoseconds." << endl;
+            }
+                break;
+            case 7: {
                 int maxValue = array[0];
                 int minValue = array[0];
                 if (sortedIndicator) {   
@@ -158,7 +261,7 @@ int main() {
                 cout << "Average: " << (minValue + maxValue) / 2 << endl;
             }
                 break;
-            case 4: {
+            case 8: {
                 cout << "Input a number N: ";
                 int number = readValue<int>();
                 int count = 0;
@@ -169,7 +272,7 @@ int main() {
                 cout << "There are " << count << " values more than " << number << "." << endl;
             }
                 break;
-            case 5: {
+            case 9: {
                 cout << "Input a number N: ";
                 int number = readValue<int>();
                 int count = 0;
@@ -180,7 +283,7 @@ int main() {
                 cout << "There are " << count << " values less than " << number << "." << endl;
             }
                 break;
-            case 6: {
+            case 10: {
                 cout << "Input a number N: ";
                 int number = readValue<int>();
                 cout << "Binary search -- ";
@@ -209,7 +312,7 @@ int main() {
                 cout << " (took " << dresult.count() << " nanoseconds)" << endl;
             }
                   break;
-            case 7: {
+            case 11: {
                 int index1 = 0;
                 do {
                     cout << "Input an index N1: ";

@@ -340,6 +340,7 @@ int main() {
             default:
                 cout << "\nCategory with number " << choice << " does not exist." << endl;
         }
+        
         system("pause");
     }
 }

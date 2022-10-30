@@ -158,6 +158,29 @@ int step7default(int* array, int value) {
     return -1; //Значение не найдено
 }
 
+//Подсчёт элементов сортированного массива
+int count_sorted(int* array, int value) {
+    int index = step7binary(array, value);
+    if (index == -1) return 0;
+    int count = 1;
+    for (int i = index - 1; i > 0; i++) {
+        if (array[i] == value) count++;
+    }
+    for (int i = index + 1; i < N - 1; i++) {
+        if (array[i] == value) count++;
+    }
+}
+
+//Подсчёт элементов сортированного массива
+int count_unsorted(int* array, int value) {
+    int index = step7default(array, value);
+    if (index == -1) return 0;
+    int count = 1;
+    for (int i = index + 1; i < N - 1; i++) {
+        if (array[i] == value) count++;
+    }
+}
+
 int main() {
     srand(time(0));
     int array[N] {};
@@ -241,31 +264,36 @@ int main() {
             }
                 break;
             case 7: {
-                int maxValue = array[0];
-                int minValue = array[0];
-                if (sortedIndicator) {   
-                    auto t1 = steady_clock::now();
-                    maxValue = array[N-1];
+                int maxValue = -101;
+                int minValue = 101;
+                if (sortedIndicator) {
                     minValue = array[0];
-                    auto t2 = steady_clock::now();
-                    auto result = duration_cast<nanoseconds>(t2 - t1);
-                    cout << "Finding min and max values in SORTED array took " << result.count() << " nanoseconds." << endl; 
+                    maxValue = array[N-1];
                 } else {
-                    auto t1 = steady_clock::now();
                     for(int i = 1; i < N; i++) {    
                         if (array[i] > maxValue)
                             maxValue = array[i];
                         if (array[i] < minValue)
-                                minValue = array[i];
+                            minValue = array[i];
                     }
-                    auto t2 = steady_clock::now();
-                    auto result = duration_cast<nanoseconds>(t2 - t1);
-                    cout << "Finding min and max values in UNSORTED array took " << result.count() << " nanoseconds." << endl; 
                 }
+                int midValue = (minValue + maxValue) / 2;
                 cout << "Min: " << minValue << endl;
                 cout << "Max: " << maxValue << endl;
-                cout << "Average: " << (minValue + maxValue) / 2 << endl;
-                //todo подсчёт элементов
+                cout << "Average: " << midValue << endl;
+                if (sortedIndicator) {
+                    auto t1 = steady_clock::now();
+                    int counted = count_sorted(array, midValue);
+                    auto t2 = steady_clock::now();
+                    auto result = duration_cast<nanoseconds>(t2 - t1);
+                    cout << "Counted " << counted << " values (took " << result.count() << " nanoseconds.)" << endl; 
+                } else {
+                    auto t1 = steady_clock::now();
+                    int counted = count_unsorted(array, midValue);
+                    auto t2 = steady_clock::now();
+                    auto result = duration_cast<nanoseconds>(t2 - t1);
+                    cout << "Counted " << counted << " values (took " << result.count() << " nanoseconds.)" << endl; 
+                }
             }
                 break;
             case 8: {

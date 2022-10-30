@@ -163,12 +163,13 @@ int count_sorted(int* array, int value) {
     int index = step7binary(array, value);
     if (index == -1) return 0;
     int count = 1;
-    for (int i = index - 1; i > 0; i++) {
+    for (int i = index - 1; i > 0; i--) {
         if (array[i] == value) count++;
     }
     for (int i = index + 1; i < N - 1; i++) {
         if (array[i] == value) count++;
     }
+    return count;
 }
 
 //Подсчёт элементов сортированного массива
@@ -179,6 +180,7 @@ int count_unsorted(int* array, int value) {
     for (int i = index + 1; i < N - 1; i++) {
         if (array[i] == value) count++;
     }
+    return count;
 }
 
 int main() {

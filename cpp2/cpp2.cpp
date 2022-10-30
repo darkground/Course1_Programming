@@ -39,6 +39,7 @@ void step1(int* array) {
 }
 
 //Быстрая сортировка
+//Сложность: O(n^2)
 void step2_quick(int* array, int ptStart, int ptEnd)
 {
 	int lb = ptStart; //Левый край (left bound)
@@ -60,6 +61,7 @@ void step2_quick(int* array, int ptStart, int ptEnd)
 }
 
 //Пузырьковая сортировка
+//Сложность: O(n^2)
 void step2_bubble(int* array) {
     for(int i = 0; i < N - 1; i++) {
         bool flag = true;
@@ -75,6 +77,7 @@ void step2_bubble(int* array) {
 }
 
 //Сортировка вставками
+//Сложность: O(n^2)
 void step2_insert(int* array) {
     for(int i = 1; i < N; i++) {
         for(int j = i; j > 0 && array[j - 1] > array[j]; j--) {
@@ -84,6 +87,7 @@ void step2_insert(int* array) {
 }
 
 //Сортировка расчёской
+//Сложность: O(n^2)
 void step2_comb(int* array) {
     const float K = 1.247; //Коэффициент уменьшения
     float S = N - 1; //Расстояние
@@ -99,6 +103,7 @@ void step2_comb(int* array) {
 }
 
 //Сортировка шейкер
+//Сложность: O(n^2)
 void step2_shaker(int* array) {
     int lb = 0;
     int rb = N - 1;
@@ -177,7 +182,8 @@ int main() {
             "8. Count values that are more than N\n"
             "9. Count values that are less than N\n"
             "10. Find a value\n"
-            "11. Swap values by index\n\n";
+            "11. Swap values by index\n"
+            "12. Individual Task\n\n";
         cout << "Type a number to continue: ";
         int choice = readValue<int>();
         cout << endl;
@@ -259,6 +265,7 @@ int main() {
                 cout << "Min: " << minValue << endl;
                 cout << "Max: " << maxValue << endl;
                 cout << "Average: " << (minValue + maxValue) / 2 << endl;
+                //todo подсчёт элементов
             }
                 break;
             case 8: {
@@ -335,6 +342,24 @@ int main() {
                 auto result = duration_cast<nanoseconds>(t2 - t1);
                 sortedIndicator = false;
                 cout << "Swapping took " << result.count() << " nanoseconds." << endl;
+            }
+                break;
+            case 12: {
+                cout << "Input a number N: ";
+                int n = readValue<int>();
+                for (int i = 1; i < N; i += 2) {
+                    array[i] -= n;
+                    array[i] *= rand() % 9 + 1;
+                }
+                for (int i = 1; i < 10; i++) {
+                    cout << "Dividable by " << i << ": ";
+                    int count = 0;
+                    for (int j = 0; j < N; j++) {
+                        if (array[j] % i == 0)
+                            count++;
+                    }
+                    cout << count << endl;
+                }
             }
                 break;
             default:

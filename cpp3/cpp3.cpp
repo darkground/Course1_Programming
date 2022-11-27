@@ -33,8 +33,9 @@ T readValue() {
 /*
 *   Функция для вывода матрицы в терминал
 *   setw используется для задания ширины поля числа (т.е. вывод будет красивым, в виде таблицы)
+*   Если поставить blocks = true, то вывод будет форматирован в 4 блока
 */
-void printMatrix(int (*arr)[N]) {
+void printMatrix(int (*arr)[N], bool blocks = false) {
     for(int i = 0; i < N; i++) {
         for(int j = 0; j < N; j++) {
             int v = *(*(arr + i) + j);
@@ -42,7 +43,11 @@ void printMatrix(int (*arr)[N]) {
                 cout << "   ."; 
             else
                 cout << setw(4) << v;
+            if (blocks && (j + 1 == N / 2))
+                cout << ' ';
         }
+        if (blocks && (i + 1 == N / 2))
+            cout << endl;
         cout << endl;
     }
 }
@@ -115,6 +120,160 @@ void fillSnake(int (*arr)[N]) {
     }
 }
 
+/*
+*   Смена блоков матрицы A (задание 2a)
+*   1 2  ->  3 1
+*   3 4      4 2
+*/
+void switchA(int (*arr)[N]) {
+    system("cls");
+    printMatrix(arr, true);
+
+    int tempBlock[N/2][N/2]{};
+    for(int i = 0; i < N / 2; i++)
+        for(int j = 0; j < N / 2; j++)
+            *(*(tempBlock + i) + j) = *(*(arr + i) + j);
+    
+    for(int i = 0; i < N / 2; i++)
+        for(int j = 0; j < N / 2; j++)
+            *(*(arr + i) + j) = *(*(arr + i + N / 2) + j);
+    
+    for(int i = N / 2; i < N; i++)
+        for(int j = 0; j < N / 2; j++)
+            *(*(arr + i) + j) = *(*(arr + i) + j + N / 2);
+    
+    for(int i = N / 2; i < N; i++)
+        for(int j = N / 2; j < N; j++)
+            *(*(arr + i) + j) = *(*(arr + i - N / 2) + j);
+
+    for(int i = 0; i < N / 2; i++)
+        for(int j = N / 2; j < N; j++)
+            *(*(arr + i) + j) = *(*(tempBlock + i) + j - N / 2);
+    
+    cout << "\nAfter switching blocks:\n\n";
+    printMatrix(arr, true);
+}
+
+/*
+*   Смена блоков матрицы B (задание 2b)
+*   1 2  ->  4 3
+*   3 4      2 1
+*/
+void switchB(int (*arr)[N]) {
+    system("cls");
+    printMatrix(arr, true);
+
+    int tempBlock1[N/2][N/2]{};
+    int tempBlock2[N/2][N/2]{};
+
+    for(int i = 0; i < N / 2; i++)
+        for(int j = 0; j < N / 2; j++)
+            *(*(tempBlock1 + i) + j) = *(*(arr + i) + j);
+
+    for(int i = 0; i < N / 2; i++)
+        for(int j = N / 2; j < N; j++)
+            *(*(tempBlock2 + i) + j - N / 2) = *(*(arr + i) + j);
+
+    for(int i = 0; i < N / 2; i++)
+        for(int j = 0; j < N / 2; j++)
+            *(*(arr + i) + j) = *(*(arr + i + N / 2) + j + N / 2);
+
+    for(int i = 0; i < N / 2; i++)
+        for(int j = N / 2; j < N; j++)
+            *(*(arr + i) + j) = *(*(arr + i + N / 2) + j - N / 2);
+
+    for(int i = N / 2; i < N; i++)
+        for(int j = N / 2; j < N; j++)
+            *(*(arr + i) + j) = *(*(tempBlock1 + i - N / 2) + j - N / 2);
+
+    for(int i = N / 2; i < N; i++)
+        for(int j = 0; j < N / 2; j++)
+            *(*(arr + i) + j) = *(*(tempBlock2 + i - N / 2) + j);
+    
+    cout << "\nAfter switching blocks:\n\n";
+    printMatrix(arr, true);
+}
+
+/*
+*   Смена блоков матрицы C (задание 2c)
+*   1 2  ->  3 4
+*   3 4      1 2
+*/
+void switchC(int (*arr)[N]) {
+    system("cls");
+    printMatrix(arr, true);
+
+    int tempBlock1[N/2][N/2]{};
+    int tempBlock2[N/2][N/2]{};
+
+    for(int i = 0; i < N / 2; i++)
+        for(int j = 0; j < N / 2; j++)
+            *(*(tempBlock1 + i) + j) = *(*(arr + i) + j);
+
+    for(int i = 0; i < N / 2; i++)
+        for(int j = N / 2; j < N; j++)
+            *(*(tempBlock2 + i) + j - N / 2) = *(*(arr + i) + j);
+
+    for(int i = 0; i < N / 2; i++)
+        for(int j = 0; j < N / 2; j++)
+            *(*(arr + i) + j) = *(*(arr + i + N / 2) + j);
+
+    for(int i = 0; i < N / 2; i++)
+        for(int j = N / 2; j < N; j++)
+            *(*(arr + i) + j) = *(*(arr + i + N / 2) + j);
+
+    for(int i = N / 2; i < N; i++)
+        for(int j = 0; j < N / 2; j++)
+            *(*(arr + i) + j) = *(*(tempBlock1 + i - N / 2) + j);
+
+    for(int i = N / 2; i < N; i++)
+        for(int j = N / 2; j < N; j++)
+            *(*(arr + i) + j) = *(*(tempBlock2 + i - N / 2) + j - N / 2);
+    
+    cout << "\nAfter switching blocks:\n\n";
+    printMatrix(arr, true);
+}
+
+/*
+*   Смена блоков матрицы D (задание 2d)
+*   1 2  ->  2 1
+*   3 4      4 3
+*/
+void switchD(int (*arr)[N]) {
+    system("cls");
+    printMatrix(arr, true);
+
+    int tempBlock1[N/2][N/2]{};
+    int tempBlock2[N/2][N/2]{};
+
+    for(int i = 0; i < N / 2; i++)
+        for(int j = 0; j < N / 2; j++)
+            *(*(tempBlock1 + i) + j) = *(*(arr + i) + j);
+
+    for(int i = N / 2; i < N; i++)
+        for(int j = 0; j < N / 2; j++)
+            *(*(tempBlock2 + i - N / 2) + j) = *(*(arr + i) + j);
+
+    for(int i = 0; i < N / 2; i++)
+        for(int j = 0; j < N / 2; j++)
+            *(*(arr + i) + j) = *(*(arr + i) + j + N / 2);
+
+    for(int i = N / 2; i < N; i++)
+        for(int j = 0; j < N / 2; j++)
+            *(*(arr + i) + j) = *(*(arr + i) + j + N / 2);
+
+    for(int i = 0; i < N / 2; i++)
+        for(int j = N / 2; j < N; j++)
+            *(*(arr + i) + j) = *(*(tempBlock1 + i) + j - N / 2);
+
+    for(int i = N / 2; i < N; i++)
+        for(int j = N / 2; j < N; j++)
+            *(*(arr + i) + j) = *(*(tempBlock2 + i - N / 2) + j - N / 2);
+    
+    cout << "\nAfter switching blocks:\n\n";
+    printMatrix(arr, true);
+}
+
 int main()
 {
     if (N % 2 != 0) {
@@ -160,12 +319,16 @@ int main()
             cout << "Matrix generation complete." << endl;
             break;
         case 3:
+            switchA(arr);
             break;
         case 4:
+            switchB(arr);
             break;
         case 5:
+            switchC(arr);
             break;
         case 6:
+            switchD(arr);
             break;
         case 7:
             break;

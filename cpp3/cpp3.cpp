@@ -17,7 +17,7 @@ T readValue() {
     while (true) {
         cin >> value;
         if (cin.fail()) {
-            cout << "\nIncorrect input. Enter new value: ";
+            cout << "Incorrect input. Enter new value: ";
             cin.clear();
             // numeric_limits<streamsize> это предел количества знаков в streamsize (вернёт число)
             // нужно чтобы очистить максимальное количество оставшихся символов в буфере до новой строки
@@ -39,10 +39,7 @@ void printMatrix(int (*arr)[N], bool blocks = false) {
     for(int i = 0; i < N; i++) {
         for(int j = 0; j < N; j++) {
             int v = *(*(arr + i) + j);
-            if (v == 0) // Если число равно нулю, то просто вывести точку (для видимости)
-                cout << "   ."; 
-            else
-                cout << setw(4) << v;
+            cout << setw(4) << v;
             if (blocks && (j + 1 == N / 2))
                 cout << ' ';
         }
@@ -274,6 +271,92 @@ void switchD(int (*arr)[N]) {
     printMatrix(arr, true);
 }
 
+/*
+*   Быстрая сортировка двумерного массива. (задание 3)
+*   Из-за того, что подмассивы идут последовательно в памяти,
+*   сортирует как будто бы это одномерный массив
+*/
+void quicksort(int* arr, int ptStart, int ptEnd)
+{
+	int lb = ptStart; //Левый край (left bound)
+	int rb = ptEnd; //Правый край (right bound)
+	int anchor = *(arr + (lb + rb) / 2); //Опорная точка
+	while (lb < rb)
+	{
+		while (*(arr + lb) < anchor) lb++;
+		while (*(arr + rb) > anchor) rb--;
+		if (lb <= rb)
+		{
+			swap(*(arr + lb), *(arr + rb));
+			lb++;
+			rb--;
+		}
+	}
+	if (ptStart < rb) quicksort(arr, ptStart, rb);
+	if (lb < ptEnd) quicksort(arr, lb, ptEnd);
+}
+
+/*
+*   Добавить N ко всем числам (задание 4)
+*/
+void addition(int (*arr)[N]) {
+    printMatrix(arr);
+    cout << "Enter N: ";
+    int nv = readValue<int>();
+    for(int i = 0; i < N; i++)
+        for(int j = 0; j < N; j++)
+            *(*(arr + i) + j) = *(*(arr + i) + j) + nv;
+    cout << "\nAfter addition:\n\n";
+    printMatrix(arr);
+}
+
+/*
+*   Вычесть N из всех чисел (задание 4)
+*/
+void substraction(int (*arr)[N]) {
+    printMatrix(arr);
+    cout << "Enter N: ";
+    int nv = readValue<int>();
+    for(int i = 0; i < N; i++)
+        for(int j = 0; j < N; j++)
+            *(*(arr + i) + j) = *(*(arr + i) + j) - nv;
+    cout << "\nAfter substraction:\n\n";
+    printMatrix(arr);
+}
+
+/*
+*   Все числа умножить на N (задание 4)
+*/
+void multiplication(int (*arr)[N]) {
+    printMatrix(arr);
+    cout << "Enter N: ";
+    int nv = readValue<int>();
+    for(int i = 0; i < N; i++)
+        for(int j = 0; j < N; j++)
+            *(*(arr + i) + j) = *(*(arr + i) + j) * nv;
+    cout << "\nAfter multiplication:\n\n";
+    printMatrix(arr);
+}
+
+/*
+*   Все числа разделить на N (задание 4)
+*   N = 0 не принимается
+*/
+void division(int (*arr)[N]) {
+    printMatrix(arr);
+    int nv = 0;
+    do {
+        cout << "Enter N: ";
+        nv = readValue<int>();
+    } while (nv == 0);
+
+    for(int i = 0; i < N; i++)
+        for(int j = 0; j < N; j++)
+            *(*(arr + i) + j) = *(*(arr + i) + j) / nv;
+    cout << "\nAfter division:\n\n";
+    printMatrix(arr);
+}
+
 int main()
 {
     if (N % 2 != 0) {
@@ -287,7 +370,7 @@ int main()
         cout << "Matrix (" << N << "x" << N << "):\n";
         printMatrix(arr);
         cout <<
-            "Choose a category from below:\n"
+            "\nChoose a category from below:\n"
             "0. Exit\n"
             "1. Fill matrix (circles)\n"
             "2. Fill matrix (snake)\n"
@@ -331,14 +414,27 @@ int main()
             switchD(arr);
             break;
         case 7:
+            system("cls");
+            printMatrix(arr);
+            quicksort(arr[0], 0, N * N - 1);
+            cout << "\nAfter sorting:\n\n";
+            printMatrix(arr);
             break;
         case 8:
+            system("cls");
+            addition(arr);
             break;
         case 9:
+            system("cls");
+            substraction(arr);
             break;
         case 10:
+            system("cls");
+            multiplication(arr);
             break;
         case 11:
+            system("cls");
+            division(arr);
             break;
         default:
             cout << "\nCategory with number " << choice << " does not exist." << endl;

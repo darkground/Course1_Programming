@@ -61,22 +61,23 @@ void emptyMatrix(int (*arr)[N]) {
 }
 
 /*
-*   Промежуточный этап заполнения матрицы:
-*   Поэтапный вывод полученной матрицы, вывод того, что изменилось
-*/
-void fillStep(int (*arr)[N], int i, int j, int value) {
-    system("cls");
-    *(*(arr + i) + j) = value;
-    printMatrix(arr);
-    cout << "Value at " << "[" << i + 1 << ", " << j + 1 << "] was set to " << value << endl;
-    system("pause");
-}
-
-/*
 *   Получить рандомное число от 1 до N * N
 */
 int rval() {
-    return rand() % (N*N - 1) + 1;
+    return rand() % (N * N - 1) + 1;
+}
+
+/*
+*   Промежуточный этап заполнения матрицы:
+*   Поэтапный вывод полученной матрицы, вывод того, что изменилось
+*/
+void fillStep(int (*arr)[N], int i, int j) {
+    system("cls");
+    int v = rval();
+    *(*(arr + i) + j) = v;
+    printMatrix(arr);
+    cout << "Value at " << "[" << i + 1 << ", " << j + 1 << "] was set to " << v << endl;
+    system("pause");
 }
 
 /*
@@ -88,13 +89,13 @@ void fillCircled(int (*arr)[N]) {
     int loops = 0;
     while (loops < N) {
         for(int i = loops; i < N - loops; i++)
-            fillStep(arr, loops, i, rval());
+            fillStep(arr, loops, i);
         for(int i = loops + 1; i < N - loops; i++)
-            fillStep(arr, i, N - loops - 1, rval());
+            fillStep(arr, i, N - loops - 1);
         for(int i = N - loops - 2; i >= loops; i--)
-            fillStep(arr, N - loops - 1, i, rval());
+            fillStep(arr, N - loops - 1, i);
         for(int i = N - loops - 2; i > loops; i--)
-            fillStep(arr, i, loops, rval());
+            fillStep(arr, i, loops);
         
         loops++;
     }
@@ -109,10 +110,10 @@ void fillSnake(int (*arr)[N]) {
     int column = 0;
     while (column < N) {
         for(int i = 0; i < N; i++)
-            fillStep(arr, i, column, rval());
+            fillStep(arr, i, column);
         column++;
         for(int i = N - 1; i >= 0; i--)
-            fillStep(arr, i, column, rval());
+            fillStep(arr, i, column);
         column++;
     }
 }

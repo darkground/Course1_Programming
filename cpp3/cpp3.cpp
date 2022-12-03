@@ -313,14 +313,14 @@ void addition(int (*arr)[N]) {
 /*
 *   Вычесть N из всех чисел (задание 4)
 */
-void substraction(int (*arr)[N]) {
+void subtraction(int (*arr)[N]) {
     printMatrix(arr);
     cout << "Enter N: ";
     int nv = readValue<int>();
     for(int i = 0; i < N; i++)
         for(int j = 0; j < N; j++)
             *(*(arr + i) + j) = *(*(arr + i) + j) - nv;
-    cout << "\nAfter substraction:\n\n";
+    cout << "\nAfter subtraction:\n\n";
     printMatrix(arr);
 }
 
@@ -357,9 +357,37 @@ void division(int (*arr)[N]) {
     printMatrix(arr);
 }
 
+void indvTask(int (*arr)[N]) {
+    int arr2[N][N]{};
+    
+    for(int i = 0; i < N; i++)
+        for(int j = 0; j < N; j++)
+            *(*(arr2 + i) + j) = rval();
+    
+    cout << "Created a new " << N << "x" << N << " matrix:\n";
+    printMatrix(arr2);
+    system("pause");
+    
+    for(int i = 0; i < N; i++)
+        for(int j = 0; j < N; j++) {
+            system("cls");
+            cout << "Old matrix:\n";
+            printMatrix(arr);
+            cout << "New matrix:\n";
+            printMatrix(arr2);
+            cout << "Original [" << i + 1 << "," << j + 1 << "] = " << *(*(arr + i) + j) << " + " << *(*(arr2 + i) + j) << endl;
+            *(*(arr + i) + j) = *(*(arr + i) + j) + *(*(arr2 + i) + j);
+            system("pause");
+        }
+    system("cls");
+    cout << "Old matrix:\n";
+    printMatrix(arr);
+    cout << "Calculation complete." << endl;
+}
+
 int main()
 {
-    if (N % 2 != 0) {
+    if (N < 2 || N % 2 != 0) {
         cout << "Invalid Size!\n";
         return 0;
     }
@@ -380,9 +408,10 @@ int main()
             "6. Switch blocks (D)\n"
             "7. Sort matrix\n"
             "8. Append number (+)\n"
-            "9. Substract number (-)\n"
+            "9. Subtract number (-)\n"
             "10. Multiply by a number (*)\n"
-            "11. Divide by a number (/)\n\n";
+            "11. Divide by a number (/)\n"
+            "12. Individual task\n\n";
         cout << "Type a number to continue: ";
         int choice = readValue<int>();
         cout << endl;
@@ -426,7 +455,7 @@ int main()
             break;
         case 9:
             system("cls");
-            substraction(arr);
+            subtraction(arr);
             break;
         case 10:
             system("cls");
@@ -435,6 +464,10 @@ int main()
         case 11:
             system("cls");
             division(arr);
+            break;
+        case 12:
+            system("cls");
+            indvTask(arr);
             break;
         default:
             cout << "\nCategory with number " << choice << " does not exist." << endl;

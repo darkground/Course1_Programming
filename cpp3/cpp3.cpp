@@ -358,6 +358,12 @@ void division(int (*arr)[N]) {
     printMatrix(arr);
 }
 
+/*
+*   Индивидуальное задание (1).
+*   Заполните матрицу случайными числами от 1 до N*N.
+*   Создайте ещё одну матрицу порядка N. Заполните её случайными числами от 1 до N*N.
+*   Сложите две матрицы, при этом отобразите все промежуточные выводы.
+*/
 void indvTask(int (*arr)[N]) {
     int arr2[N][N]{};
     
@@ -376,8 +382,9 @@ void indvTask(int (*arr)[N]) {
             printMatrix(arr);
             cout << "New matrix:\n";
             printMatrix(arr2);
-            cout << "Original [" << i + 1 << "," << j + 1 << "] = " << *(*(arr + i) + j) << " + " << *(*(arr2 + i) + j) << endl;
-            *(*(arr + i) + j) = *(*(arr + i) + j) + *(*(arr2 + i) + j);
+            int s = *(*(arr + i) + j) + *(*(arr2 + i) + j);
+            cout << "Value at [" << i + 1 << "," << j + 1 << "] = " << s << " (" << *(*(arr + i) + j) << " + " << *(*(arr2 + i) + j) << ")" << endl;
+            *(*(arr + i) + j) = s;
             system("pause");
         }
     system("cls");

@@ -1,4 +1,5 @@
 ﻿#include <iostream>
+#include <fstream>
 
 const int LETTERS_MAX = 10; 
 const int WORDS_MAX = 50;
@@ -112,7 +113,16 @@ void readText(char sentence[]) {
     } while (choice != 'f' && choice != 't');
     switch (choice)
     {
-        case 'f':
+        case 'f': {
+            ifstream ifs = ifstream("input.txt");
+            if (!ifs.is_open()) break;
+            char c = ' ';
+            int x = 0;
+            while (ifs.get(c))
+                sentence[x++] = c;
+            cout << "Read file.";
+            sentence[x] = '\0';
+        }
             break;
         case 't':
             cout << "Enter text line: ";

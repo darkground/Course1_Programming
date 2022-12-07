@@ -6,10 +6,12 @@ const int WORDS_MAX = 50;
 
 unsigned int slen(char*);
 void scopy(char*, char*);
+bool isPunctuation(char c);
 
 void printSentence(bool, char[], char[][LETTERS_MAX+1]);
 void readText(char[]);
 void readWords(char[], char[][LETTERS_MAX+1]);
+void fixWord(char[]);
 
 using namespace std;
 
@@ -144,6 +146,7 @@ void readWords(char sentence[], char words[][LETTERS_MAX+1]) {
     for (int x = 0; sentence[x]; x++) {
         if (wx != 0 && sentence[x] == ' ') {
             word[wx] = '\0';
+            fixWord(word);
             scopy(words[wlx++], word);
             wx = 0;
         }
@@ -152,8 +155,29 @@ void readWords(char sentence[], char words[][LETTERS_MAX+1]) {
     }
     
     word[wx] = '\0';
-    if (wx != 0)
+    if (wx != 0) {
+        fixWord(word);
         scopy(words[wlx], word);
+    }
+}
+
+void fixWord(char word[]) {
+    // Знаки
+    unsigned int wlen = slen(word);
+    if (isPunctuation(word[wlen - 1])) {
+        int count = 1;
+        char pType = word[wlen - 1];
+        for (int i = wlen - 2; isPunctuation(word[i]) && i >= 0; i--)
+            count++;
+        if (count != 1 && (count != 3 || pType != '.'))
+            word[wlen - count + 1] = '\0';
+    }
+    // Регистр
+    //todo
+}
+
+bool isPunctuation(char c) {
+    return c == '.' || c == ',' || c == '!' || c == '?';
 }
 
 /*
@@ -173,8 +197,8 @@ unsigned int slen(char* str) {
 *   str_from - Строка, из которой будут копироваться символы. 
 */
 void scopy(char* str_to, char* str_from) {
-    unsigned j = slen(str_to);
-    for (unsigned i = 0; str_from[i]; ++i, ++j)
-        str_to[j] = str_from[i];
-    str_to[++j] = '\0';
+    unsigned i = 0;
+    for (; str_from[i]; ++i)
+        str_to[i] = str_from[i];
+    str_to[i] = '\0';
 }

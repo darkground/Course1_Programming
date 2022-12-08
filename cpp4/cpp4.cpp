@@ -6,7 +6,8 @@ const int WORDS_MAX = 50;
 
 unsigned int slen(char*);
 void scopy(char*, char*);
-bool isPunctuation(char c);
+bool isPunctuation(char);
+char toLower(char);
 
 void printSentence(bool, char[], char[][LETTERS_MAX+1]);
 void readText(char[]);
@@ -122,7 +123,7 @@ void readText(char sentence[]) {
             int x = 0;
             while (ifs.get(c))
                 sentence[x++] = c;
-            cout << "Read file.";
+            cout << "Complete." << endl;
             sentence[x] = '\0';
         }
             break;
@@ -155,12 +156,17 @@ void readWords(char sentence[], char words[][LETTERS_MAX+1]) {
     }
     
     word[wx] = '\0';
+    words[wlx][0] = '\0';
     if (wx != 0) {
         fixWord(word);
         scopy(words[wlx], word);
     }
 }
 
+/*
+*   Исправить знаки и регистр в слове
+*   char - Слово для исправления
+*/
 void fixWord(char word[]) {
     // Знаки
     unsigned int wlen = slen(word);
@@ -173,9 +179,25 @@ void fixWord(char word[]) {
             word[wlen - count + 1] = '\0';
     }
     // Регистр
-    //todo
+    for (int i = 1; word[i]; i++)
+        word[i] = toLower(word[i]);
 }
 
+/*
+*   Перевод в нижний регистр
+*   c - Символ для перевода
+*/
+char toLower(char c) {
+    // https://www.asciitable.com/asciifull.gif
+    if (c >= 65 && c <= 90)
+        return c + 32; 
+    return c;
+}
+
+/*
+*   Определить, является ли символ знаком пунктуации
+*   c - Символ для проверки
+*/
 bool isPunctuation(char c) {
     return c == '.' || c == ',' || c == '!' || c == '?';
 }

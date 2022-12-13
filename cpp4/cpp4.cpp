@@ -8,11 +8,16 @@ unsigned int slen(char*);
 void scopy(char*, char*);
 bool isPunctuation(char);
 char toLower(char);
+bool onlyLetters(char[]);
+bool onlyNumbers(char[]);
+bool onlyLettersNumbers(char[]);
 
 void printSentence(bool, char[], char[][LETTERS_MAX+1]);
 void readText(char[]);
 void readWords(char[], char[][LETTERS_MAX+1]);
 void fixWord(char[]);
+void indTask1(char [][LETTERS_MAX+1]);
+void indTask2(char [][LETTERS_MAX+1]);
 
 using namespace std;
 
@@ -66,15 +71,19 @@ int main()
             return 0;
         case 1:
             readText(sentence);
+            readWords(sentence, wordlist);
             split = false;
             break;
         case 2:
-            readWords(sentence, wordlist);
+            for(int i = 0; wordlist[i][0]; i++)
+                fixWord(wordlist[i]);
             split = true;
             break;
         case 3:
+            indTask1(wordlist);
             break;
         case 4:
+            indTask2(wordlist);
             break;
         default:
             cout << "\nCategory with number " << choice << " does not exist." << endl;
@@ -91,9 +100,7 @@ int main()
 *   words - Массив для вывода в случае split = false
 */
 void printSentence(bool split, char sentence[], char words[][LETTERS_MAX+1]) {
-    cout << "State: " << (split ? "FIXED" : "UNREDACTED") << "\n";
     if (split) {
-
         cout << "Sentence: \"";
         for(int i = 0; words[i][0]; i++) {
             if (i != 0) 
@@ -147,7 +154,6 @@ void readWords(char sentence[], char words[][LETTERS_MAX+1]) {
     for (int x = 0; sentence[x]; x++) {
         if (wx != 0 && sentence[x] == ' ') {
             word[wx] = '\0';
-            fixWord(word);
             scopy(words[wlx++], word);
             wx = 0;
         }
@@ -158,7 +164,6 @@ void readWords(char sentence[], char words[][LETTERS_MAX+1]) {
     word[wx] = '\0';
     words[wlx][0] = '\0';
     if (wx != 0) {
-        fixWord(word);
         scopy(words[wlx], word);
     }
 }
@@ -181,6 +186,80 @@ void fixWord(char word[]) {
     // Регистр
     for (int i = 1; word[i]; i++)
         word[i] = toLower(word[i]);
+}
+
+/*
+*   Индивидуальное задание 1:
+*   Вывести на экран сначала все слова, содержащие только буквы,
+*   Затем слова, содержащие только цифры, а потом слова, содержащие и буквы, и цифры.
+*/
+void indTask1(char words[][LETTERS_MAX+1]) {
+    cout << " -- Only Letters --\n";
+    for(int i = 0; words[i][0]; i++) {
+        if (onlyLetters(words[i]))
+            cout << words[i] << '\n';
+    }
+    cout << " -- Only Numbers --\n";
+    for(int i = 0; words[i][0]; i++) {
+        if (onlyNumbers(words[i]))
+            cout << words[i] << '\n';
+    }
+    cout << " -- Has Letters & Numbers --\n";
+    for(int i = 0; words[i][0]; i++) {
+        if (onlyLettersNumbers(words[i]))
+            cout << words[i] << '\n';
+    }
+}
+
+/*
+*   Индивидуальное задание 2:
+*   Вывести все слова исходной последовательности на экран вертикально.
+*/
+void indTask2(char words[][LETTERS_MAX+1]) {
+    for(int i = 0; words[i][0]; i++)
+        cout << words[i] << '\n';
+}
+
+/*
+*   Проверить содержит ли строка только буквы.
+*   str - Строка для проверки
+*/
+bool onlyLetters(char str[]) {
+    for (int i = 0; str[i]; i++) {
+        if ((str[i] < 65 || str[i] > 90) && (str[i] < 97 || str[i] > 122))
+            return false;
+    }
+    return true;
+}
+
+/*
+*   Проверить содержит ли строка только цифры.
+*   str - Строка для проверки
+*/
+bool onlyNumbers(char str[]) {
+    for (int i = 0; str[i]; i++) {
+        if (str[i] < 48 || str[i] > 57)
+            return false;
+    }
+    return true;
+}
+
+/*
+*   Проверить содержит ли строка только буквы.
+*   str - Строка для проверки
+*/
+bool onlyLettersNumbers(char str[]) {
+    bool hadLetter = false;
+    bool hadNumber = false;
+
+    for (int i = 0; str[i]; i++) {
+        if ((str[i] >= 65 && str[i] <= 90) || (str[i] >= 97 && str[i] <= 122))
+            hadLetter = true;
+        if (str[i] >= 48 && str[i] <= 57)
+            hadNumber = true;
+    }
+
+    return hadLetter && hadNumber;
 }
 
 /*

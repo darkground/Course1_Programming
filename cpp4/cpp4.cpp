@@ -1,23 +1,25 @@
 ﻿#include <iostream>
 #include <fstream>
 
-const int LETTERS_MAX = 10; 
-const int WORDS_MAX = 50;
-
 unsigned int slen(char*);
 void scopy(char*, char*);
-bool isPunctuation(char);
-char toLower(char);
-bool onlyLetters(char[]);
-bool onlyNumbers(char[]);
-bool onlyLettersNumbers(char[]);
+void sappend(char*, char*);
+bool sequal(char*, char*);
 
-void printSentence(bool, char[], char[][LETTERS_MAX+1]);
-void readText(char[]);
-void readWords(char[], char[][LETTERS_MAX+1]);
-void fixWord(char[]);
-void indTask1(char [][LETTERS_MAX+1]);
-void indTask2(char [][LETTERS_MAX+1]);
+bool isPunctuation(char);
+char lower(char);
+bool onlyLetters(char*);
+bool onlyNumbers(char*);
+bool onlyLettersNumbers(char*);
+
+void read(char*);
+void tokenize(char*, char[][11]);
+void join(char*, char[][11]);
+
+void fixTypos(char*);
+void indTask1(char*);
+void indTask2(char*);
+void linearSearch(char*);
 
 using namespace std;
 
@@ -27,7 +29,6 @@ using namespace std;
 *   т.е. readValue<int>() - получить число.
 *   prompt - текст перед вводом
 */
-
 template <typename T>
 T readValue(const char* prompt) {
     T value;
@@ -48,45 +49,48 @@ T readValue(const char* prompt) {
     }
 }
 
-int main()
-{
+int main() {
     char sentence[512] = "";
-    char wordlist[WORDS_MAX][LETTERS_MAX+1]{};
-    bool split = false;
 
     while (true) {
         system("cls");
-        printSentence(split, sentence, wordlist);
+        cout << "Sentence: \"" << sentence << "\"";
         cout <<
             "\nChoose a category from below:\n"
             "0. Exit\n"
             "1. Read text from a file or text\n"
             "2. Fix text issues\n"
             "3. Individual task 1\n"
-            "4. Individual task 2\n\n";
+            "4. Individual task 2\n"
+            "5. Linear Search\n\n";
         int choice = readValue<int>("Type a number to continue: ");
         cout << endl;
         switch (choice) {
         case 0:
             return 0;
         case 1:
-            readText(sentence);
-            readWords(sentence, wordlist);
-            split = false;
+            read(sentence);
             break;
-        case 2:
+        case 2: {
+            char wordlist[50][11]{};
+            tokenize(sentence, wordlist);
             for(int i = 0; wordlist[i][0]; i++)
-                fixWord(wordlist[i]);
-            split = true;
+                fixTypos(wordlist[i]);
+            join(sentence, wordlist);
+        }
             break;
         case 3:
-            indTask1(wordlist);
+            indTask1(sentence);
             break;
         case 4:
-            indTask2(wordlist);
+            indTask2(sentence);
+            break;
+        case 5:
+            linearSearch(sentence);
             break;
         default:
             cout << "\nCategory with number " << choice << " does not exist." << endl;
+            break;
         }
         system("pause");
     }
@@ -94,29 +98,10 @@ int main()
 }
 
 /*
-*   Вывести строку на экран.
-*   split - Флаг выполненного второго шага (устранены ли проблемы)
-*   sentence - Строка для вывода в случае split = true
-*   words - Массив для вывода в случае split = false
-*/
-void printSentence(bool split, char sentence[], char words[][LETTERS_MAX+1]) {
-    if (split) {
-        cout << "Sentence: \"";
-        for(int i = 0; words[i][0]; i++) {
-            if (i != 0) 
-                cout << ' ';
-            cout << words[i]; 
-        }
-        cout << "\"\n";
-    } else
-        cout << "Sentence: \"" << sentence << "\"\n";
-}
-
-/*
 *   Считать ввод в строку.
 *   sentence - Строка слов
 */
-void readText(char sentence[]) {
+void read(char* sentence) {
     char choice = ' ';
     do {
         choice = readValue<char>("Where to read from? (f)ile or (t)ext: ");
@@ -146,10 +131,10 @@ void readText(char sentence[]) {
 *   sentence - Строка слов
 *   words - Массив слов
 */
-void readWords(char sentence[], char words[][LETTERS_MAX+1]) {
-    char word[LETTERS_MAX + 1]{};
-    int wlx = 0;
-    int wx = 0;
+void tokenize(char* sentence, char words[][11]) {
+    char word[11]{};
+    int wlx = 0; // Индекс списка слов
+    int wx = 0; // Индекс буквы слов
 
     for (int x = 0; sentence[x]; x++) {
         if (wx != 0 && sentence[x] == ' ') {
@@ -160,19 +145,31 @@ void readWords(char sentence[], char words[][LETTERS_MAX+1]) {
         if (sentence[x] != ' ')
             word[wx++] = sentence[x];
     }
-    
+
     word[wx] = '\0';
     words[wlx][0] = '\0';
-    if (wx != 0) {
+    if (wx != 0)
         scopy(words[wlx], word);
-    }
+}
+
+/*
+*   Конвертировать список слов в строку слов.
+*   sentence - Строка слов
+*   words - Массив слов
+*/
+void join(char* sentence, char words[][11]) {
+    sentence[0] = '\0';
+    
+    scopy(sentence, words[0]);
+    for(int i = 1; words[i][0]; i++)
+        sappend(sentence, words[i]);
 }
 
 /*
 *   Исправить знаки и регистр в слове
 *   char - Слово для исправления
 */
-void fixWord(char word[]) {
+void fixTypos(char* word) {
     // Знаки
     unsigned int wlen = slen(word);
     if (isPunctuation(word[wlen - 1])) {
@@ -185,7 +182,7 @@ void fixWord(char word[]) {
     }
     // Регистр
     for (int i = 1; word[i]; i++)
-        word[i] = toLower(word[i]);
+        word[i] = lower(word[i]);
 }
 
 /*
@@ -193,21 +190,24 @@ void fixWord(char word[]) {
 *   Вывести на экран сначала все слова, содержащие только буквы,
 *   Затем слова, содержащие только цифры, а потом слова, содержащие и буквы, и цифры.
 */
-void indTask1(char words[][LETTERS_MAX+1]) {
+void indTask1(char* sentence) {
+    char tokenized[50][11] {};
+    tokenize(sentence, tokenized);
+
     cout << " -- Only Letters --\n";
-    for(int i = 0; words[i][0]; i++) {
-        if (onlyLetters(words[i]))
-            cout << words[i] << '\n';
+    for(int i = 0; tokenized[i][0]; i++) {
+        if (onlyLetters(tokenized[i]))
+            cout << tokenized[i] << '\n';
     }
     cout << " -- Only Numbers --\n";
-    for(int i = 0; words[i][0]; i++) {
-        if (onlyNumbers(words[i]))
-            cout << words[i] << '\n';
+    for(int i = 0; tokenized[i][0]; i++) {
+        if (onlyNumbers(tokenized[i]))
+            cout << tokenized[i] << '\n';
     }
     cout << " -- Has Letters & Numbers --\n";
-    for(int i = 0; words[i][0]; i++) {
-        if (onlyLettersNumbers(words[i]))
-            cout << words[i] << '\n';
+    for(int i = 0; tokenized[i][0]; i++) {
+        if (onlyLettersNumbers(tokenized[i]))
+            cout << tokenized[i] << '\n';
     }
 }
 
@@ -215,16 +215,52 @@ void indTask1(char words[][LETTERS_MAX+1]) {
 *   Индивидуальное задание 2:
 *   Вывести все слова исходной последовательности на экран вертикально.
 */
-void indTask2(char words[][LETTERS_MAX+1]) {
-    for(int i = 0; words[i][0]; i++)
-        cout << words[i] << '\n';
+void indTask2(char* sentence) {
+    char tokenized[50][11] {};
+    tokenize(sentence, tokenized);
+
+    for(int i = 0; tokenized[i][0]; i++)
+        cout << tokenized[i] << '\n';
+}
+
+void linearSearch(char* sentence) {
+    char substring[512] {};
+    cout << "Enter substring line: ";
+    cin.getline(substring, 512); //TODO: fix wrong input
+
+    unsigned int stl = slen(sentence);
+    unsigned int sbl = slen(substring);
+    int index = -1;
+    for (int i = 0; i + sbl < stl + 1; i++) {
+        bool found = true;
+        for (int j = i; j < i + sbl; j++)
+            if (sentence[j] != substring[j - i]) {
+                found = false;
+                break;
+            }
+        if (found) {
+            index = i;
+            break;
+        }
+    }
+    if (index != -1) {
+        cout << "Index: " << index << "\nIn sentence: \"";
+        for(int i = 0; sentence[i]; i++)
+            if (i >= index && i < (index + sbl))
+                cout << "\033[0;31m" << sentence[i];
+            else 
+                cout << "\033[0m" << sentence[i];
+        cout << "\033[0m\"\n";
+    }
+    else
+        cout << "Substring was not found." << endl;
 }
 
 /*
 *   Проверить содержит ли строка только буквы.
 *   str - Строка для проверки
 */
-bool onlyLetters(char str[]) {
+bool onlyLetters(char* str) {
     for (int i = 0; str[i]; i++) {
         if ((str[i] < 65 || str[i] > 90) && (str[i] < 97 || str[i] > 122))
             return false;
@@ -236,7 +272,7 @@ bool onlyLetters(char str[]) {
 *   Проверить содержит ли строка только цифры.
 *   str - Строка для проверки
 */
-bool onlyNumbers(char str[]) {
+bool onlyNumbers(char* str) {
     for (int i = 0; str[i]; i++) {
         if (str[i] < 48 || str[i] > 57)
             return false;
@@ -248,7 +284,7 @@ bool onlyNumbers(char str[]) {
 *   Проверить содержит ли строка только буквы.
 *   str - Строка для проверки
 */
-bool onlyLettersNumbers(char str[]) {
+bool onlyLettersNumbers(char* str) {
     bool hadLetter = false;
     bool hadNumber = false;
 
@@ -266,7 +302,7 @@ bool onlyLettersNumbers(char str[]) {
 *   Перевод в нижний регистр
 *   c - Символ для перевода
 */
-char toLower(char c) {
+char lower(char c) {
     // https://www.asciitable.com/asciifull.gif
     if (c >= 65 && c <= 90)
         return c + 32; 
@@ -302,4 +338,29 @@ void scopy(char* str_to, char* str_from) {
     for (; str_from[i]; ++i)
         str_to[i] = str_from[i];
     str_to[i] = '\0';
+}
+
+/*
+*   Скопировать символы одной строки в конец другой.
+*   str_to - Строка, в которую будут добавляться символы.
+*   str_from - Строка, из которой будут копироваться символы.
+*/
+void sappend(char* str_to, char* str_from) {
+    unsigned j = slen(str_to);
+    str_to[j++] = ' ';
+    for (unsigned i = 0; str_from[i]; ++i, ++j)
+        str_to[j] = str_from[i];
+    str_to[j] = '\0';
+}
+
+/*
+*   Сравнить две строки.
+*   str1 - Строка для сравнения 1.
+*   str2 - Строка для сравнения 2.
+*/
+bool sequal(char* str1, char* str2) {
+    for (unsigned i = 0; str1[i]; ++i)
+        if (str1[i] != str2[i])
+            return false;
+    return true;
 }

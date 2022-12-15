@@ -230,7 +230,26 @@ void linearSearch(char* sentence) {
 
     unsigned int stl = slen(sentence);
     unsigned int sbl = slen(substring);
-    int index = -1;
+    int i = 0;
+    cout << "Sentence search: \"";
+    while (i + sbl < stl + 1) {
+        bool match = true;
+        for (int j = i; j < i + sbl; j++)
+            if (sentence[j] != substring[j - i]) {
+                match = false;
+                break;
+            }
+        if (match) {
+            cout << "\033[0;31m" << substring << "\033[0m";
+            i += sbl;
+        }
+        else {
+            cout << sentence[i];
+            i++;
+        }
+    }
+    cout << "\"" << endl;
+    /*int index = -1;
     for (int i = 0; i + sbl < stl + 1; i++) {
         bool found = true;
         for (int j = i; j < i + sbl; j++)
@@ -253,7 +272,7 @@ void linearSearch(char* sentence) {
         cout << "\033[0m\"\n";
     }
     else
-        cout << "Substring was not found." << endl;
+        cout << "Substring was not found." << endl;*/
 }
 
 /*

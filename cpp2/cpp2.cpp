@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <limits> //нужно для numeric_limits
 #include <chrono> //нужно для измерения выполнения функции
+#include "cpp2.h"
 
 using namespace std;
 using namespace chrono;
@@ -9,9 +10,8 @@ const int N = 100;
 
 /*
 *   Функция для ввода данных в терминал
+*   При вызове функции нужно указать получаемые данные в скобках, т.е. readValue<int>() - получить число
 */
-
-//При вызове функции нужно указать получаемые данные в скобках, т.е. readValue<int>() - получить число
 template <typename T>
 T readValue() {
     T value;
@@ -29,158 +29,6 @@ T readValue() {
             return value;
         }
     }
-}
-
-//Заполнение массива случайными числами
-void step1(int* array) {
-    for(int i = 0; i < N; i++) {
-        array[i] = rand() % 199 - 99;
-    }
-}
-
-//Быстрая сортировка
-//Сложность: O(n^2)
-void step2_quick(int* array, int ptStart, int ptEnd)
-{
-	int lb = ptStart; //Левый край (left bound)
-	int rb = ptEnd; //Правый край (right bound)
-	int anchor = array[(lb + rb)/ 2]; //Опорная точка
-	while (lb < rb)
-	{
-		while (array[lb] < anchor) lb++;
-		while (array[rb]> anchor) rb--;
-		if (lb <= rb)
-		{
-			swap(array[lb], array[rb]);
-			lb++;
-			rb--;
-		}
-	}
-	if (ptStart < rb) step2_quick(array, ptStart, rb);
-	if (lb < ptEnd) step2_quick(array, lb, ptEnd);
-}
-
-//Пузырьковая сортировка
-//Сложность: O(n^2)
-void step2_bubble(int* array) {
-    for(int i = 0; i < N - 1; i++) {
-        bool flag = true;
-        for (int j = 0; j < N - i - 1; j++) {
-            if(array[j] > array[j + 1]) {
-                flag = false;
-                swap(array[j], array[j + 1]);
-            }
-        }
-        if (flag)
-            break;
-    }
-}
-
-//Сортировка вставками
-//Сложность: O(n^2)
-void step2_insert(int* array) {
-    for(int i = 1; i < N; i++) {
-        for(int j = i; j > 0 && array[j - 1] > array[j]; j--) {
-            swap(array[j - 1], array[j]);
-        }
-    }
-}
-
-//Сортировка расчёской
-//Сложность: O(n^2)
-void step2_comb(int* array) {
-    const float K = 1.247; //Коэффициент уменьшения
-    float S = N - 1; //Расстояние
-    while(S >= 1) {
-        for (int i = 0; i + S < N; i++) {
-            if (array[i] > array[int(i + S)]) {
-                swap(array[i], array[int(i + S)]);
-            }
-        }
-        S /= K;
-    }
-    step2_bubble(array);
-}
-
-//Сортировка шейкер
-//Сложность: O(n^2)
-void step2_shaker(int* array) {
-    int lb = 0;
-    int rb = N - 1;
-    bool changed = true;
-    while(changed) {
-        changed = false;
-        for(int i = lb; i < rb; i++) {
-            if (array[i] > array[i + 1]) {
-                swap(array[i], array[i + 1]);
-                changed = true;
-            }
-        }
-
-        if (!changed)
-            break;
-        rb--;
-
-        for(int i = rb - 1; i >= lb; i--) {
-            if (array[i] > array[i + 1]) {
-                swap(array[i], array[i + 1]);
-                changed = true;
-            }
-        }
-        lb++;
-    }
-}
-
-//Бинарный поиск индекса числа
-int step7binary(int* array, int value) {
-    int low = 0;
-    int mid = 0;
-    int high = N - 1;
-    while (low <= high) {
-        mid = low + (high - low) / 2;
-        if (value == array[mid])
-            return mid;
-        
-        if (value > array[mid])
-            low = mid + 1; //Для смещения mid направо на следующей итерации поиска
-        else
-            high = mid - 1; //Для смещения mid налево на следующей итерации поиска
-    };
-    return -1; //Значение не найдено
-}
-
-//Обычный поиск индекса числа
-int step7default(int* array, int value) {
-    for(int i = 0; i < N; i++) {
-        if (array[i] == value)
-            return i;
-    }
-    return -1; //Значение не найдено
-}
-
-//Подсчёт элементов сортированного массива
-int count_sorted(int* array, int value) {
-    int index = step7binary(array, value);
-    if (index == -1) return 0;
-    int count = 1;
-    for (int i = index - 1; i > 0; i--) {
-        if (array[i] == value) count++;
-    }
-    for (int i = index + 1; i < N - 1; i++) {
-        if (array[i] == value) count++;
-    }
-    return count;
-}
-
-//Подсчёт элементов сортированного массива
-int count_unsorted(int* array, int value) {
-    int index = step7default(array, value);
-    if (index == -1) return 0;
-    int count = 1;
-    for (int i = index + 1; i < N - 1; i++) {
-        if (array[i] == value) count++;
-    }
-    return count;
 }
 
 int main() {
@@ -398,4 +246,155 @@ int main() {
         
         system("pause");
     }
+}
+
+//Заполнение массива случайными числами
+void step1(int* array) {
+    for(int i = 0; i < N; i++) {
+        array[i] = rand() % 199 - 99;
+    }
+}
+
+//Быстрая сортировка
+//Сложность: O(n^2)
+void step2_quick(int* array, int ptStart, int ptEnd) {
+	int lb = ptStart; //Левый край (left bound)
+	int rb = ptEnd; //Правый край (right bound)
+	int anchor = array[(lb + rb)/ 2]; //Опорная точка
+	while (lb < rb)
+	{
+		while (array[lb] < anchor) lb++;
+		while (array[rb]> anchor) rb--;
+		if (lb <= rb)
+		{
+			swap(array[lb], array[rb]);
+			lb++;
+			rb--;
+		}
+	}
+	if (ptStart < rb) step2_quick(array, ptStart, rb);
+	if (lb < ptEnd) step2_quick(array, lb, ptEnd);
+}
+
+//Пузырьковая сортировка
+//Сложность: O(n^2)
+void step2_bubble(int* array) {
+    for(int i = 0; i < N - 1; i++) {
+        bool flag = true;
+        for (int j = 0; j < N - i - 1; j++) {
+            if(array[j] > array[j + 1]) {
+                flag = false;
+                swap(array[j], array[j + 1]);
+            }
+        }
+        if (flag)
+            break;
+    }
+}
+
+//Сортировка вставками
+//Сложность: O(n^2)
+void step2_insert(int* array) {
+    for(int i = 1; i < N; i++) {
+        for(int j = i; j > 0 && array[j - 1] > array[j]; j--) {
+            swap(array[j - 1], array[j]);
+        }
+    }
+}
+
+//Сортировка расчёской
+//Сложность: O(n^2)
+void step2_comb(int* array) {
+    const float K = 1.247; //Коэффициент уменьшения
+    float S = N - 1; //Расстояние
+    while(S >= 1) {
+        for (int i = 0; i + S < N; i++) {
+            if (array[i] > array[int(i + S)]) {
+                swap(array[i], array[int(i + S)]);
+            }
+        }
+        S /= K;
+    }
+    step2_bubble(array);
+}
+
+//Сортировка шейкер
+//Сложность: O(n^2)
+void step2_shaker(int* array) {
+    int lb = 0;
+    int rb = N - 1;
+    bool changed = true;
+    while(changed) {
+        changed = false;
+        for(int i = lb; i < rb; i++) {
+            if (array[i] > array[i + 1]) {
+                swap(array[i], array[i + 1]);
+                changed = true;
+            }
+        }
+
+        if (!changed)
+            break;
+        rb--;
+
+        for(int i = rb - 1; i >= lb; i--) {
+            if (array[i] > array[i + 1]) {
+                swap(array[i], array[i + 1]);
+                changed = true;
+            }
+        }
+        lb++;
+    }
+}
+
+//Бинарный поиск индекса числа
+int step7binary(int* array, int value) {
+    int low = 0;
+    int mid = 0;
+    int high = N - 1;
+    while (low <= high) {
+        mid = low + (high - low) / 2;
+        if (value == array[mid])
+            return mid;
+        
+        if (value > array[mid])
+            low = mid + 1; //Для смещения mid направо на следующей итерации поиска
+        else
+            high = mid - 1; //Для смещения mid налево на следующей итерации поиска
+    };
+    return -1; //Значение не найдено
+}
+
+//Обычный поиск индекса числа
+int step7default(int* array, int value) {
+    for(int i = 0; i < N; i++) {
+        if (array[i] == value)
+            return i;
+    }
+    return -1; //Значение не найдено
+}
+
+//Подсчёт элементов сортированного массива
+int count_sorted(int* array, int value) {
+    int index = step7binary(array, value);
+    if (index == -1) return 0;
+    int count = 1;
+    for (int i = index - 1; i > 0; i--) {
+        if (array[i] == value) count++;
+    }
+    for (int i = index + 1; i < N - 1; i++) {
+        if (array[i] == value) count++;
+    }
+    return count;
+}
+
+//Подсчёт элементов сортированного массива
+int count_unsorted(int* array, int value) {
+    int index = step7default(array, value);
+    if (index == -1) return 0;
+    int count = 1;
+    for (int i = index + 1; i < N - 1; i++) {
+        if (array[i] == value) count++;
+    }
+    return count;
 }

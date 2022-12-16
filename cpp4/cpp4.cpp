@@ -20,6 +20,7 @@ void fixTypos(char*);
 void indTask1(char*);
 void indTask2(char*);
 void linearSearch(char*);
+void kmpSearch(char*);
 
 using namespace std;
 
@@ -49,12 +50,27 @@ T readValue(const char* prompt) {
     }
 }
 
+/*
+*   Функция для ввода данных в терминал (как строку)
+*   prompt - текст перед вводом
+*   line - строка для заполнения
+*   chars - максимальное количество входных данных
+*/
+void readLine(const char* prompt, char* line, int chars) {
+    cout << prompt;
+    if (!cin.getline(line, chars)) {
+        // Так как определённый тип не требуется, то при остатке символов в буфере просто очищаем их
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+}
+
 int main() {
     char sentence[512] = "";
 
     while (true) {
         system("cls");
-        cout << "Sentence: \"" << sentence << "\"";
+        cout << "Sentence: \"" << sentence << "\"\n";
         cout <<
             "\nChoose a category from below:\n"
             "0. Exit\n"
@@ -62,7 +78,8 @@ int main() {
             "2. Fix text issues\n"
             "3. Individual task 1\n"
             "4. Individual task 2\n"
-            "5. Linear Search\n\n";
+            "5. Linear Search\n"
+            "6. Knuth-Morris-Pratt (KMP) Search\n\n";
         int choice = readValue<int>("Type a number to continue: ");
         cout << endl;
         switch (choice) {
@@ -87,6 +104,9 @@ int main() {
             break;
         case 5:
             linearSearch(sentence);
+            break;
+        case 6:
+            kmpSearch(sentence);
             break;
         default:
             cout << "\nCategory with number " << choice << " does not exist." << endl;
@@ -120,8 +140,7 @@ void read(char* sentence) {
         }
             break;
         case 't':
-            cout << "Enter text line: ";
-            cin.getline(sentence, 512);
+            readLine("Enter text line: ", sentence, 512);
             break;
     }
 }
@@ -225,13 +244,13 @@ void indTask2(char* sentence) {
 
 void linearSearch(char* sentence) {
     char substring[512] {};
-    cout << "Enter substring line: ";
-    cin.getline(substring, 512); //TODO: fix wrong input
+    readLine("Enter substring line: ", substring, 512);
 
     unsigned int stl = slen(sentence);
     unsigned int sbl = slen(substring);
+
     int i = 0;
-    cout << "Sentence search: \"";
+    cout << "Matching indexes: ";
     while (i + sbl < stl + 1) {
         bool match = true;
         for (int j = i; j < i + sbl; j++)
@@ -240,15 +259,66 @@ void linearSearch(char* sentence) {
                 break;
             }
         if (match) {
-            cout << "\033[0;31m" << substring << "\033[0m";
+            cout << i << ' ';
             i += sbl;
         }
-        else {
-            cout << sentence[i];
+        else i++;
+    }
+    cout << endl;
+}
+
+void kmpSearch(char* sentence) {
+    char substring[512] {};
+    int prefixArray[512] {};
+
+    readLine("Enter substring line: ", substring, 512);
+
+    unsigned int stl = slen(sentence);
+    unsigned int sbl = slen(substring);
+
+    int i = 1, j = 0; //Индекс прохода и курсор
+    /*
+    Если Ai != Aj, тогда, если j = 0, то px[i] = 0; i++
+        иначе, j = px[j - 1]
+    Иначе px[i] = j + 1; i++; j++
+    */
+    while (i < sbl) {
+        if (substring[i] == substring[j]) {
+            prefixArray[i] = j + 1; //Префиксы и суффиксы совпали, запись значения
+            i++; j++;
+        }
+        else if (j == 0) { //Префиксы и суффиксы не совпали, курсор в начале, сброс 
+            prefixArray[i] = 0;
             i++;
         }
+        else j = prefixArray[j - 1]; //Префиксы и суффиксы не совпали, установка курсора на прошлое успешное совпадение, сброс
     }
-    cout << "\"" << endl;
+
+    int ix = -1, k = 0, l = 0;
+    cout << "Matching indexes: ";
+    /*
+    Если Sk = Pl, то
+        k++; l++;
+        Если l = n, то есть совпадение
+    Иначе Если l = 0, то
+            k++;
+            Если k = m, то совпадений нет
+          Иначе l = px[l - 1]
+    */
+    while (k < stl) {
+        if (sentence[k] == substring[l]) {
+            k++; l++;
+            if (l == sbl) {
+                cout << k - sbl << ' ';
+                l = 0;
+            }
+        }
+        else {
+            if (l == 0) k++;
+            else l = prefixArray[l - 1];
+        }   
+    }
+    cout << endl;
 }
 
 /*

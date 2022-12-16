@@ -1,26 +1,6 @@
 ﻿#include <iostream>
 #include <fstream>
-
-unsigned int slen(char*);
-void scopy(char*, char*);
-void sappend(char*, char*);
-bool sequal(char*, char*);
-
-bool isPunctuation(char);
-char lower(char);
-bool onlyLetters(char*);
-bool onlyNumbers(char*);
-bool onlyLettersNumbers(char*);
-
-void read(char*);
-void tokenize(char*, char[][11]);
-void join(char*, char[][11]);
-
-void fixTypos(char*);
-void indTask1(char*);
-void indTask2(char*);
-void linearSearch(char*);
-void kmpSearch(char*);
+#include "cpp4.h"
 
 using namespace std;
 
@@ -102,11 +82,17 @@ int main() {
         case 4:
             indTask2(sentence);
             break;
-        case 5:
-            linearSearch(sentence);
+        case 5: {
+            char substring[512] {};
+            readLine("Enter substring line: ", substring, 512);
+            linearSearch(sentence, substring);
+        }
             break;
-        case 6:
-            kmpSearch(sentence);
+        case 6: {
+            char substring[512] {};
+            readLine("Enter substring line: ", substring, 512);
+            kmpSearch(sentence, substring);
+        }
             break;
         default:
             cout << "\nCategory with number " << choice << " does not exist." << endl;
@@ -242,10 +228,7 @@ void indTask2(char* sentence) {
         cout << tokenized[i] << '\n';
 }
 
-void linearSearch(char* sentence) {
-    char substring[512] {};
-    readLine("Enter substring line: ", substring, 512);
-
+void linearSearch(char* sentence, char* substring) {
     unsigned int stl = slen(sentence);
     unsigned int sbl = slen(substring);
 
@@ -267,11 +250,8 @@ void linearSearch(char* sentence) {
     cout << endl;
 }
 
-void kmpSearch(char* sentence) {
-    char substring[512] {};
+void kmpSearch(char* sentence, char* substring) {
     int prefixArray[512] {};
-
-    readLine("Enter substring line: ", substring, 512);
 
     unsigned int stl = slen(sentence);
     unsigned int sbl = slen(substring);

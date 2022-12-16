@@ -1,13 +1,13 @@
 ﻿#include <iostream>
 #include <limits>
+#include "cpp1.h"
 
 using namespace std;
 
 /*
 *   Функция для ввода данных в терминал
+*   При вызове функции нужно указать получаемые данные в скобках, т.е. readValue<int>() - получить число
 */
-
-//При вызове функции нужно указать получаемые данные в скобках, т.е. readValue<int>() - получить число
 template <typename T>
 T readValue() {
     T value;
@@ -21,6 +21,41 @@ T readValue() {
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             return value;
         }
+    }
+}
+
+int main() {
+    while (true) {
+        system ("cls");
+        cout << 
+            "Choose a category from below:\n"
+            "0. Exit\n"
+            "1. Type sizes\n"
+            "2. Integer in memory\n"
+            "3. Float in memory\n"
+            "4. Double in memory\n\n";
+        cout << "Type a number to continue: ";
+        int choice = readValue<int>();
+        system("cls");
+        switch (choice) {
+            case 0:
+                return 0;
+            case 1:
+                typeSizes();
+                break;
+            case 2:
+                integerTask();
+                break;
+            case 3:
+                floatTask();
+                break;
+            case 4:
+                doubleTask();
+                break;
+            default:
+                cout << "\nCategory with number " << choice << " does not exist." << endl;
+        }
+        system("pause");
     }
 }
 
@@ -185,40 +220,5 @@ void doubleTask() {
             cout << "(" << number << ")" << endl;
         }
         else break;
-    }
-}
-
-int main() {
-    while (true) {
-        system ("cls");
-        cout << 
-            "Choose a category from below:\n"
-            "0. Exit\n"
-            "1. Type sizes\n"
-            "2. Integer in memory\n"
-            "3. Float in memory\n"
-            "4. Double in memory\n\n";
-        cout << "Type a number to continue: ";
-        int choice = readValue<int>();
-        system("cls");
-        switch (choice) {
-            case 0:
-                return 0;
-            case 1:
-                typeSizes();
-                break;
-            case 2:
-                integerTask();
-                break;
-            case 3:
-                floatTask();
-                break;
-            case 4:
-                doubleTask();
-                break;
-            default:
-                cout << "\nCategory with number " << choice << " does not exist." << endl;
-        }
-        system("pause");
     }
 }

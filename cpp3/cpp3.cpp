@@ -1,8 +1,7 @@
 ﻿#include <iostream>
 #include <limits> //нужно для numeric_limits
 #include <iomanip> //нужно для setw (красивый вывод)
-
-const int N = 6; //8 or 10
+#include "cpp3.h"
 
 using namespace std;
 
@@ -31,11 +30,109 @@ T readValue() {
 }
 
 /*
+*   Получить рандомное число от 1 до N * N
+*/
+int rval() {
+    return rand() % (N * N - 1) + 1;
+}
+
+int main()
+{
+    if (N < 2 || N % 2 != 0) {
+        cout << "Invalid Size!\n";
+        return 0;
+    }
+    srand(time(0));
+    int arr[N][N]{};
+    while (true) {
+        system("cls");
+        cout << "Matrix (" << N << "x" << N << "):\n";
+        printMatrix(arr);
+        cout <<
+            "\nChoose a category from below:\n"
+            "0. Exit\n"
+            "1. Fill matrix (circles)\n"
+            "2. Fill matrix (snake)\n"
+            "3. Switch blocks (A)\n"
+            "4. Switch blocks (B)\n"
+            "5. Switch blocks (C)\n"
+            "6. Switch blocks (D)\n"
+            "7. Sort matrix\n"
+            "8. Append number (+)\n"
+            "9. Subtract number (-)\n"
+            "10. Multiply by a number (*)\n"
+            "11. Divide by a number (/)\n"
+            "12. Individual task\n\n";
+        cout << "Type a number to continue: ";
+        int choice = readValue<int>();
+        cout << endl;
+        switch (choice) {
+        case 0:
+            return 0;
+        case 1:
+            fillCircled(arr);
+            system("cls");
+            printMatrix(arr);
+            cout << "Matrix generation complete." << endl;
+            break;
+        case 2:
+            fillSnake(arr);
+            system("cls");
+            printMatrix(arr);
+            cout << "Matrix generation complete." << endl;
+            break;
+        case 3:
+            switchA(arr);
+            break;
+        case 4:
+            switchB(arr);
+            break;
+        case 5:
+            switchC(arr);
+            break;
+        case 6:
+            switchD(arr);
+            break;
+        case 7:
+            system("cls");
+            printMatrix(arr);
+            quicksort(arr[0], 0, N * N - 1);
+            cout << "\nAfter sorting:\n\n";
+            printMatrix(arr);
+            break;
+        case 8:
+            system("cls");
+            addition(arr);
+            break;
+        case 9:
+            system("cls");
+            subtraction(arr);
+            break;
+        case 10:
+            system("cls");
+            multiplication(arr);
+            break;
+        case 11:
+            system("cls");
+            division(arr);
+            break;
+        case 12:
+            system("cls");
+            indvTask(arr);
+            break;
+        default:
+            cout << "\nCategory with number " << choice << " does not exist." << endl;
+        }
+        system("pause");
+    }
+}
+
+/*
 *   Функция для вывода матрицы в терминал
 *   setw используется для задания ширины поля числа (т.е. вывод будет красивым, в виде таблицы)
 *   Если поставить blocks = true, то вывод будет форматирован в 4 блока
 */
-void printMatrix(int (*arr)[N], bool blocks = false) {
+void printMatrix(int (*arr)[N], bool blocks) {
     for(int i = 0; i < N; i++) {
         for(int j = 0; j < N; j++) {
             int v = *(*(arr + i) + j);
@@ -58,13 +155,6 @@ void emptyMatrix(int (*arr)[N]) {
             *(*(arr + i) + j) = 0;
         }
     }
-}
-
-/*
-*   Получить рандомное число от 1 до N * N
-*/
-int rval() {
-    return rand() % (N * N - 1) + 1;
 }
 
 /*
@@ -391,95 +481,4 @@ void indvTask(int (*arr)[N]) {
     cout << "Old matrix:\n";
     printMatrix(arr);
     cout << "Calculation complete." << endl;
-}
-
-int main()
-{
-    if (N < 2 || N % 2 != 0) {
-        cout << "Invalid Size!\n";
-        return 0;
-    }
-    srand(time(0));
-    int arr[N][N]{};
-    while (true) {
-        system("cls");
-        cout << "Matrix (" << N << "x" << N << "):\n";
-        printMatrix(arr);
-        cout <<
-            "\nChoose a category from below:\n"
-            "0. Exit\n"
-            "1. Fill matrix (circles)\n"
-            "2. Fill matrix (snake)\n"
-            "3. Switch blocks (A)\n"
-            "4. Switch blocks (B)\n"
-            "5. Switch blocks (C)\n"
-            "6. Switch blocks (D)\n"
-            "7. Sort matrix\n"
-            "8. Append number (+)\n"
-            "9. Subtract number (-)\n"
-            "10. Multiply by a number (*)\n"
-            "11. Divide by a number (/)\n"
-            "12. Individual task\n\n";
-        cout << "Type a number to continue: ";
-        int choice = readValue<int>();
-        cout << endl;
-        switch (choice) {
-        case 0:
-            return 0;
-        case 1:
-            fillCircled(arr);
-            system("cls");
-            printMatrix(arr);
-            cout << "Matrix generation complete." << endl;
-            break;
-        case 2:
-            fillSnake(arr);
-            system("cls");
-            printMatrix(arr);
-            cout << "Matrix generation complete." << endl;
-            break;
-        case 3:
-            switchA(arr);
-            break;
-        case 4:
-            switchB(arr);
-            break;
-        case 5:
-            switchC(arr);
-            break;
-        case 6:
-            switchD(arr);
-            break;
-        case 7:
-            system("cls");
-            printMatrix(arr);
-            quicksort(arr[0], 0, N * N - 1);
-            cout << "\nAfter sorting:\n\n";
-            printMatrix(arr);
-            break;
-        case 8:
-            system("cls");
-            addition(arr);
-            break;
-        case 9:
-            system("cls");
-            subtraction(arr);
-            break;
-        case 10:
-            system("cls");
-            multiplication(arr);
-            break;
-        case 11:
-            system("cls");
-            division(arr);
-            break;
-        case 12:
-            system("cls");
-            indvTask(arr);
-            break;
-        default:
-            cout << "\nCategory with number " << choice << " does not exist." << endl;
-        }
-        system("pause");
-    }
 }

@@ -154,6 +154,7 @@ int cpp2main() {
                 for(int i = 0; i < 100; i++) {    
                     if (array[i] > number)
                         count++;
+                    else break;
                 }
                 cout << "There are " << count << " values more than " << number << "." << endl;
             }
@@ -165,6 +166,7 @@ int cpp2main() {
                 for(int i = 0; i < 100; i++) {    
                     if (array[i] < number)
                         count++;
+                    else break;
                 }
                 cout << "There are " << count << " values less than " << number << "." << endl;
             }

@@ -1,12 +1,14 @@
 ﻿#include <iostream>
 #include <string>
 #include <fstream>
+#include <iomanip>
 
 using namespace std;
 
 struct Student {
     string fullname;
     char sex;
+    int age;
     
     string faculty;
     int courseId;
@@ -57,7 +59,7 @@ void readLine(const char* prompt, string* line) {
     }
 }
 
-// Создать 
+// Внести данные о студенте
 void entryCreate() {
     cout << "Creating new entry.\n";
     struct tm newtime;
@@ -68,13 +70,23 @@ void entryCreate() {
 
 	Student student;
     readLine("Full name: ", &student.fullname);
-    student.sex = readValue<char>("Sex [F/M]: ");
+    student.sex = ' ';
+    do {
+        student.sex = readValue<char>("Sex [F/M]: ");
+    } while (student.sex != 'F' && student.sex != 'M');
+    do {
+        student.age = readValue<int>("Age: ");
+    } while (student.age < 1);
     readLine("Faculty: ", &student.faculty);
-    student.courseId = readValue<int>("Course Number: ");
+    do {
+        student.courseId = readValue<int>("Course Number [1-5]: ");
+    } while (student.courseId < 1 || student.courseId > 5);
     student.group = readValue<int>("Group: ");
-    student.id = readValue<int>("Id in list: ");
+    do {
+        student.id = readValue<int>("Id in list: ");
+    } while (student.id < 0);
     for(int i = 0; i < 8; i++) {
-        cout << "Term grade #" << i << ": ";
+        cout << "Term grade #" << i + 1 << (i < 3 ? " (exam)" : "") << ": ";
         student.grades[i] = readValue<int>();
     }
     student.update_date = buf;
@@ -92,11 +104,12 @@ void entryCreate() {
 		ofstream database;
 		database.open("students.txt", ios::app); 
 		if (!database.is_open())
-			cout << '\n' << "Database write error!";
+			cout << "Database write error!\n";
 		else
 		{
 			database << student.fullname << '\n';
 			database << student.sex << '\n';
+			database << student.age << '\n';
             database << student.faculty << '\n';
             database << student.courseId << '\n';
 			database << student.group << '\n';
@@ -124,9 +137,45 @@ int countEntries() {
 			lines++;
 		}
 		database.close();
-		return lines / 8;
+		return lines / 9;
 	}
 	else return 0;
+}
+
+void printEntries() {
+	ifstream database("students.txt");
+	if (database.is_open())
+	{
+        cout 
+            << "Faculty  Course Group  Id   Sex  Name\n"
+            << "---------------------------------------------\n";
+
+        for(int i = 0; i < countEntries(); i++) {
+            Student student;
+            getline(database, student.fullname, '\n');
+            database >> student.sex;
+            database >> student.age >> ws;
+            getline(database, student.faculty, '\n');
+            database >> student.courseId;
+            database >> student.group;
+            database >> student.id;
+            for (int i = 0; i < 8; i++)
+                database >> student.grades[i];
+            database >> ws;
+            getline(database, student.update_date, '\n');
+
+            cout 
+                << setw(8) << left << student.faculty << ' '
+                << setw(6) << student.courseId << ' '
+                << setw(6) << student.group << ' '
+                << setw(4) << student.id << ' '
+                << setw(4) << student.sex << ' '
+                << student.fullname << '\n';
+        }
+        database.close();
+	}
+	else
+        cout << "Database read error!\n";
 }
 
 int main()
@@ -137,13 +186,17 @@ int main()
         cout <<
             "\nChoose a category from below:\n"
             "0. Exit\n"
-            "1. Create student entry\n\n";
+            "1. View all entries\n"
+            "2. Create student entry\n\n";
         int choice = readValue<int>("Type a number to continue: ");
         cout << endl;
         switch (choice) {
             case 0:
                 return 0;
             case 1:
+                printEntries();
+                break;
+            case 2:
                 entryCreate();
                 break;
             default:

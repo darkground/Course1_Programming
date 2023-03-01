@@ -295,7 +295,7 @@ int main()
             "\nChoose a category from below:\n"
             "0. Exit\n"
             "1. View all entries\n"
-            "2. Create student entry\n";
+            "2. Create student entry\n"
             "3. Edit student entry\n\n";
         int choice = readValue<int>("Type a number to continue: ");
         cout << endl;

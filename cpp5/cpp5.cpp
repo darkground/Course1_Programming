@@ -147,8 +147,8 @@ void printEntries() {
 	if (database.is_open())
 	{
         cout 
-            << "Faculty  Course Group  Id   Sex  Name\n"
-            << "---------------------------------------------\n";
+            << "Faculty  Course Group  Id   Sex  Age  Name                     Last Updated & Grades\n"
+            << "------------------------------------------------------------------------------------\n";
 
         for(int i = 0; i < countEntries(); i++) {
             Student student;
@@ -170,7 +170,12 @@ void printEntries() {
                 << setw(6) << student.group << ' '
                 << setw(4) << student.id << ' '
                 << setw(4) << student.sex << ' '
-                << student.fullname << '\n';
+                << setw(4) << student.age << ' '
+                << setw(24) << student.fullname << ' '
+                << setw(24) << student.update_date << ' ';
+            for(int i = 0; i < 8; i++)
+                cout << ' ' << student.grades[i];
+            cout << '\n';
         }
         database.close();
 	}

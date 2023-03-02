@@ -15,6 +15,7 @@ struct Student {
     int group;
     int id;
     int grades[8];
+    float avg;
     
     string update_date;
 };
@@ -232,6 +233,112 @@ void entryEdit() {
         cout << "Database read error!\n";
 }
 
+// Просмотр студентов из определенной группы
+void viewGroupEntries() {
+    cout << "Viewing entries from group.\n";
+    int c = countEntries();
+    int group = readValue<int>("Enter group: ");
+
+    ifstream database("students.txt");
+
+    if (database.is_open())
+	{
+        Student* students = new Student[c];
+        for(int i = 0; i < c; i++) {
+            getline(database, students[i].fullname);
+            database >> students[i].sex;
+            database >> students[i].age >> ws;
+            getline(database, students[i].faculty);
+            database >> students[i].courseId;
+            database >> students[i].group;
+            database >> students[i].id;
+            for (int j = 0; j < 8; j++)
+                database >> students[i].grades[j];
+            database >> ws;
+            getline(database, students[i].update_date);
+        }
+        database.close();
+
+        cout 
+            << "ID  Faculty  Course Group  Id   Sex  Age  Name                     Last Updated & Grades\n"
+            << "----------------------------------------------------------------------------------------\n";
+
+        int t = 0;
+        for(int i = 0; i < c; i++) {
+            if (students[i].group == group) {
+                t++;
+                cout
+                    << setw(3) << left << i << ' '
+                    << setw(8) << students[i].faculty << ' '
+                    << setw(6) << students[i].courseId << ' '
+                    << setw(6) << students[i].group << ' '
+                    << setw(4) << students[i].id << ' '
+                    << setw(4) << students[i].sex << ' '
+                    << setw(4) << students[i].age << ' '
+                    << setw(24) << students[i].fullname << ' '
+                    << setw(24) << students[i].update_date << ' ';
+                for(int j = 0; j < 8; j++)
+                    cout << ' ' << students[i].grades[j];
+                cout << '\n';
+            }
+        }
+        if (t == 0)
+            cout << "No students found.\n";
+
+        delete[] students;
+	}
+	else
+        cout << "Database read error!\n";
+}
+
+// Просмотр студентов из определенной группы
+void top5() {
+    cout << "Top 5 students with highest average grade.\n";
+    int c = countEntries();
+
+    ifstream database("students.txt");
+
+    if (database.is_open())
+	{
+        Student* students = new Student[c];
+        for(int i = 0; i < c; i++) {
+            int s = 0;
+
+            getline(database, students[i].fullname);
+            database >> students[i].sex;
+            database >> students[i].age >> ws;
+            getline(database, students[i].faculty);
+            database >> students[i].courseId;
+            database >> students[i].group;
+            database >> students[i].id;
+            for (int j = 0; j < 8; j++) {
+                database >> students[i].grades[j];
+                s += students[i].grades[j];
+            }
+            database >> ws;
+            getline(database, students[i].update_date);
+            students[i].avg = (float)s / 8;
+        }
+        database.close();
+
+        for (int i = 0; i < c - 1; i++)
+            for (int j = 0; j < c - i - 1; j++)
+                if (students[j].avg < students[j+1].avg)
+                    swap(students[j], students[j + 1]);
+
+        for(int i = 0; i < min(c, 5); i++) {
+            cout << "Top " << i + 1 << ": " << students[i].group << " " << students[i].fullname << " with average " << setprecision(3) << students[i].avg << " -";
+            for(int j = 0; j < 8; j++)
+                cout << ' ' << students[i].grades[j];
+            cout << '\n';
+        }
+
+        delete[] students;
+	}
+	else
+        cout << "Database read error!\n";
+}
+
 void printEntries() {
 	ifstream database("students.txt");
 	if (database.is_open())
@@ -249,8 +356,8 @@ void printEntries() {
             database >> student.courseId;
             database >> student.group;
             database >> student.id;
-            for (int i = 0; i < 8; i++)
-                database >> student.grades[i];
+            for (int j = 0; j < 8; j++)
+                database >> student.grades[j];
             database >> ws;
             getline(database, student.update_date, '\n');
 
@@ -284,7 +391,9 @@ int main()
             "0. Exit\n"
             "1. View all entries\n"
             "2. Create student entry\n"
-            "3. Edit student entry\n\n";
+            "3. Edit student entry\n"
+            "4. View students from group\n"
+            "5. Top 5 students with highest average grades\n\n";
         int choice = readValue<int>("Type a number to continue: ");
         cout << endl;
         switch (choice) {
@@ -298,6 +407,12 @@ int main()
                 break;
             case 3:
                 entryEdit();
+                break;
+            case 4:
+                viewGroupEntries();
+                break;
+            case 5:
+                top5();
                 break;
             default:
                 cout << "\nCategory with number " << choice << " does not exist." << endl;

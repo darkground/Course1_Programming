@@ -155,47 +155,48 @@ void entryEdit() {
 
     if (database.is_open())
 	{
-        Student student;
-        for(int i = 0; i <= id; i++) {
-            getline(database, student.fullname, '\n');
-            database >> student.sex;
-            database >> student.age >> ws;
-            getline(database, student.faculty, '\n');
-            database >> student.courseId;
-            database >> student.group;
-            database >> student.id;
-            for (int i = 0; i < 8; i++)
-                database >> student.grades[i];
+        Student* students = new Student[c];
+        for(int i = 0; i < c; i++) {
+            getline(database, students[i].fullname);
+            database >> students[i].sex;
+            database >> students[i].age >> ws;
+            getline(database, students[i].faculty);
+            database >> students[i].courseId;
+            database >> students[i].group;
+            database >> students[i].id;
+            for (int j = 0; j < 8; j++)
+                database >> students[i].grades[j];
             database >> ws;
-            getline(database, student.update_date, '\n');
+            getline(database, students[i].update_date);
+            students[i].update_date.push_back('\n'); // из-за того, что asctime добавляет \n в конец
         }
         database.close();
 
-        cout << "Change name (" << student.fullname << ") to: ";
-        readLine("", &student.fullname);
+        cout << "Change name (" << students[id].fullname << ") to: ";
+        readLine("", &students[id].fullname);
         do {
-            cout << "Change sex (" << student.sex << ") to: ";
-            student.sex = readValue<char>();
-        } while (student.sex != 'F' && student.sex != 'M');
+            cout << "Change sex (" << students[id].sex << ") to: ";
+            students[id].sex = readValue<char>();
+        } while (students[id].sex != 'F' && students[id].sex != 'M');
         do {
-            cout << "Change age (" << student.age << ") to: ";
-            student.age = readValue<int>();
-        } while (student.age < 1);
-        cout << "Change faculty (" << student.faculty << ") to: ";
-        readLine("", &student.faculty);
+            cout << "Change age (" << students[id].age << ") to: ";
+            students[id].age = readValue<int>();
+        } while (students[id].age < 1);
+        cout << "Change faculty (" << students[id].faculty << ") to: ";
+        readLine("", &students[id].faculty);
         do {
-            cout << "Change course number (" << student.courseId << ") to: ";
-            student.courseId = readValue<int>();
-        } while (student.courseId < 1 || student.courseId > 5);
-        cout << "Change group (" << student.group << ") to: ";
-        student.group = readValue<int>();
+            cout << "Change course number (" << students[id].courseId << ") to: ";
+            students[id].courseId = readValue<int>();
+        } while (students[id].courseId < 1 || students[id].courseId > 5);
+        cout << "Change group (" << students[id].group << ") to: ";
+        students[id].group = readValue<int>();
         do {
-            cout << "Change id in list (" << student.id << ") to: ";
-            student.id = readValue<int>();
-        } while (student.id < 0);
+            cout << "Change id in list (" << students[id].id << ") to: ";
+            students[id].id = readValue<int>();
+        } while (students[id].id < 0);
         for(int i = 0; i < 8; i++) {
-            cout << "Change term grade #" << i + 1 << " (" << student.grades[i] << ") to: ";
-            student.grades[i] = readValue<int>();
+            cout << "Change term grade #" << i + 1 << " (" << students[id].grades[i] << ") to: ";
+            students[id].grades[i] = readValue<int>();
         }
 
         struct tm newtime;
@@ -203,42 +204,29 @@ void entryEdit() {
         time_t now = time(0);
         localtime_s(&newtime,&now);
         asctime_s(buf, &newtime);
-        student.update_date = buf;
+        students[id].update_date = buf;
 
-        ifstream database("students.txt");
-        ofstream swap("temp.txt"); 
-		if (!database.is_open() || !swap.is_open())
+        ofstream database("students.txt"); 
+		if (!database.is_open())
 			cout << "Database write error!\n";
 		else
-		{   string line;
-            int curLine = 0;
-            while (getline(database, line)) {
-                if(curLine / 9 == id) {
-                    for(int i = 0; i < 8; i++)
-                        getline(database, line); // удаляем старые данные из файла
-                    swap << student.fullname << '\n';
-                    swap << student.sex << '\n';
-                    swap << student.age << '\n';
-                    swap << student.faculty << '\n';
-                    swap << student.courseId << '\n';
-                    swap << student.group << '\n';
-                    swap << student.id << '\n';
-                    for (int i = 0; i < 8; i++)
-                        swap << student.grades[i] << " ";
-                    swap << '\n' << student.update_date;
-                    curLine += 9;
-                } else {
-                    swap << line << '\n';
-                    curLine++;
-                }
+		{
+            for(int i = 0; i < c; i++) {
+                database << students[i].fullname << '\n';
+                database << students[i].sex << '\n';
+                database << students[i].age << '\n';
+                database << students[i].faculty << '\n';
+                database << students[i].courseId << '\n';
+                database << students[i].group << '\n';
+                database << students[i].id << '\n';
+                for (int j = 0; j < 8; j++)
+                    database << students[i].grades[j] << " ";
+                database << '\n' << students[i].update_date;
             }
-
-			database.close();
-            swap.close();
-            remove("students.txt");
-            rename("temp.txt", "students.txt");
+            database.close();
             cout << '\n' << "Profile successfully updated.\n";
 		}
+        delete[] students;
 	}
 	else
         cout << "Database read error!\n";
@@ -276,8 +264,8 @@ void printEntries() {
                 << setw(4) << student.age << ' '
                 << setw(24) << student.fullname << ' '
                 << setw(24) << student.update_date << ' ';
-            for(int i = 0; i < 8; i++)
-                cout << ' ' << student.grades[i];
+            for(int j = 0; j < 8; j++)
+                cout << ' ' << student.grades[j];
             cout << '\n';
         }
         database.close();

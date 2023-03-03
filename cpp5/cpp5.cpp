@@ -291,7 +291,7 @@ void viewGroupEntries() {
         cout << "Database read error!\n";
 }
 
-// Просмотр студентов из определенной группы
+// Просмотр 5 лучших студентов с средней оценкой за прошедную сессию
 void top5() {
     cout << "Top 5 students with highest average grade.\n";
     int c = countEntries();
@@ -332,6 +332,113 @@ void top5() {
                 cout << ' ' << students[i].grades[j];
             cout << '\n';
         }
+
+        delete[] students;
+	}
+	else
+        cout << "Database read error!\n";
+}
+
+// Подсчёт м/ж
+void separateBySex() {
+    int c = countEntries();
+
+    ifstream database("students.txt");
+
+    if (database.is_open())
+	{
+        Student* students = new Student[c];
+        int m = 0, f = 0;
+        for(int i = 0; i < c; i++) {
+            int s = 0;
+
+            getline(database, students[i].fullname);
+            database >> students[i].sex;
+            database >> students[i].age >> ws;
+            getline(database, students[i].faculty);
+            database >> students[i].courseId;
+            database >> students[i].group;
+            database >> students[i].id;
+            for (int j = 0; j < 8; j++) {
+                database >> students[i].grades[j];
+                s += students[i].grades[j];
+            }
+            database >> ws;
+            getline(database, students[i].update_date);
+            students[i].avg = (float)s / 8;
+        }
+        database.close();
+
+        for (int i = 0; i < c - 1; i++){
+            if (students[i].sex == 'M')
+                m++;
+            else
+                f++;
+        }
+
+        cout << "There is " << m << " male students and " << f << " female students.\n";
+
+        delete[] students;
+	}
+	else
+        cout << "Database read error!\n";
+}
+
+
+// Фильтрация студентов по оценкам
+void viewByGrades(int lowest = 3) {
+    cout << "Viewing students with lowest grade " << lowest << ".\n";
+    int c = countEntries();
+
+    ifstream database("students.txt");
+
+    if (database.is_open())
+	{
+        Student* students = new Student[c];
+        for(int i = 0; i < c; i++) {
+            getline(database, students[i].fullname);
+            database >> students[i].sex;
+            database >> students[i].age >> ws;
+            getline(database, students[i].faculty);
+            database >> students[i].courseId;
+            database >> students[i].group;
+            database >> students[i].id;
+            for (int j = 0; j < 8; j++)
+                database >> students[i].grades[j];
+            database >> ws;
+            getline(database, students[i].update_date);
+        }
+        database.close();
+
+        cout 
+            << "ID  Faculty  Course Group  Id   Sex  Age  Name                     Last Updated & Grades\n"
+            << "----------------------------------------------------------------------------------------\n";
+
+        int t = 0;
+        for(int i = 0; i < c; i++) {
+            int low = 5;
+            for (int j = 0; j < 8; j++)
+                low = min(students[i].grades[j], low);
+            
+            if (low == lowest) {
+                t++;
+                cout
+                    << setw(3) << left << i << ' '
+                    << setw(8) << students[i].faculty << ' '
+                    << setw(6) << students[i].courseId << ' '
+                    << setw(6) << students[i].group << ' '
+                    << setw(4) << students[i].id << ' '
+                    << setw(4) << students[i].sex << ' '
+                    << setw(4) << students[i].age << ' '
+                    << setw(24) << students[i].fullname << ' '
+                    << setw(24) << students[i].update_date << ' ';
+                for(int j = 0; j < 8; j++)
+                    cout << ' ' << students[i].grades[j];
+                cout << '\n';
+            }
+        }
+        if (t == 0)
+            cout << "No students found.\n";
 
         delete[] students;
 	}
@@ -393,7 +500,11 @@ int main()
             "2. Create student entry\n"
             "3. Edit student entry\n"
             "4. View students from group\n"
-            "5. Top 5 students with highest average grades\n\n";
+            "5. Top 5 students with highest average grades\n"
+            "6. Count males/females\n"
+            "7. View students with lowest grade 3\n"
+            "8. View students with lowest grade 4\n"
+            "9. View students with lowest grade 5\n\n";
         int choice = readValue<int>("Type a number to continue: ");
         cout << endl;
         switch (choice) {
@@ -413,6 +524,18 @@ int main()
                 break;
             case 5:
                 top5();
+                break;
+            case 6:
+                separateBySex();
+                break;
+            case 7:
+                viewByGrades(3);
+                break;
+            case 8:
+                viewByGrades(4);
+                break;
+            case 9:
+                viewByGrades(5);
                 break;
             default:
                 cout << "\nCategory with number " << choice << " does not exist." << endl;

@@ -126,6 +126,7 @@ void entryCreate() {
         cout << '\n' << "This student will be expelled. The profile will not be written to the database.\n";
 }
 
+// Подсчёт количества студентов в базе
 int countEntries() {
 	ifstream database("students.txt");
 	if (database.is_open())
@@ -369,7 +370,7 @@ void separateBySex() {
         }
         database.close();
 
-        for (int i = 0; i < c - 1; i++){
+        for (int i = 0; i < c; i++){
             if (students[i].sex == 'M')
                 m++;
             else
@@ -385,7 +386,7 @@ void separateBySex() {
 }
 
 
-// Фильтрация студентов по оценкам
+// Фильтрация студентов по их худщей оценке
 void viewByGrades(int lowest = 3) {
     cout << "Viewing students with lowest grade " << lowest << ".\n";
     int c = countEntries();
@@ -421,6 +422,64 @@ void viewByGrades(int lowest = 3) {
                 low = min(students[i].grades[j], low);
             
             if (low == lowest) {
+                t++;
+                cout
+                    << setw(3) << left << i << ' '
+                    << setw(8) << students[i].faculty << ' '
+                    << setw(6) << students[i].courseId << ' '
+                    << setw(6) << students[i].group << ' '
+                    << setw(4) << students[i].id << ' '
+                    << setw(4) << students[i].sex << ' '
+                    << setw(4) << students[i].age << ' '
+                    << setw(24) << students[i].fullname << ' '
+                    << setw(24) << students[i].update_date << ' ';
+                for(int j = 0; j < 8; j++)
+                    cout << ' ' << students[i].grades[j];
+                cout << '\n';
+            }
+        }
+        if (t == 0)
+            cout << "No students found.\n";
+
+        delete[] students;
+	}
+	else
+        cout << "Database read error!\n";
+}
+
+// Фильтрация студентов по их номеру в списке
+void viewById() {
+    cout << "Viewing students with specific IDs in list.\n";
+    int c = countEntries();
+    int eId = readValue<int>("Enter list ID: ");
+
+    ifstream database("students.txt");
+
+    if (database.is_open())
+	{
+        Student* students = new Student[c];
+        for(int i = 0; i < c; i++) {
+            getline(database, students[i].fullname);
+            database >> students[i].sex;
+            database >> students[i].age >> ws;
+            getline(database, students[i].faculty);
+            database >> students[i].courseId;
+            database >> students[i].group;
+            database >> students[i].id;
+            for (int j = 0; j < 8; j++)
+                database >> students[i].grades[j];
+            database >> ws;
+            getline(database, students[i].update_date);
+        }
+        database.close();
+
+        cout 
+            << "ID  Faculty  Course Group  Id   Sex  Age  Name                     Last Updated & Grades\n"
+            << "----------------------------------------------------------------------------------------\n";
+
+        int t = 0;
+        for(int i = 0; i < c; i++) {
+            if (students[i].id == eId) {
                 t++;
                 cout
                     << setw(3) << left << i << ' '
@@ -504,7 +563,8 @@ int main()
             "6. Count males/females\n"
             "7. View students with lowest grade 3\n"
             "8. View students with lowest grade 4\n"
-            "9. View students with lowest grade 5\n\n";
+            "9. View students with lowest grade 5\n"
+            "10. View students with specific list id\n\n";
         int choice = readValue<int>("Type a number to continue: ");
         cout << endl;
         switch (choice) {
@@ -536,6 +596,9 @@ int main()
                 break;
             case 9:
                 viewByGrades(5);
+                break;
+            case 10:
+                viewById();
                 break;
             default:
                 cout << "\nCategory with number " << choice << " does not exist." << endl;

@@ -7,15 +7,15 @@ using namespace std;
 
 struct Student {
     string fullname;
-    char sex;
-    int age;
+    char sex = ' ';
+    int age = 0;
     
     string faculty;
-    int courseId;
-    int group;
-    int id;
-    int grades[8];
-    float avg;
+    int courseId = 0;
+    int group = 0;
+    int id = 0;
+    int grades[8] {0, 0, 0, 0, 0, 0, 0, 0};
+    float avg = 0.0f;
     
     string update_date;
 };
@@ -29,7 +29,7 @@ struct Student {
 */
 template <typename T>
 T readValue(const char* prompt = "") {
-    T value;
+    T value = NULL;
     cout << prompt;
     while (true) {
         cin >> value;
@@ -146,8 +146,13 @@ int countEntries() {
 
 // Изменить данные студента
 void entryEdit() {
-    cout << "Editing existing entry.\n";
     int c = countEntries();
+    if (c == 0) {
+        cout << "Database has no entries!\n";
+        return;
+    }
+
+    cout << "Editing existing entry.\n";
     int id;
     do {
         id = readValue<int>("Enter ID: ");
@@ -236,8 +241,13 @@ void entryEdit() {
 
 // Просмотр студентов из определенной группы
 void viewGroupEntries() {
-    cout << "Viewing entries from group.\n";
     int c = countEntries();
+    if (c == 0) {
+        cout << "Database has no entries!\n";
+        return;
+    }
+
+    cout << "Viewing entries from group.\n";
     int group = readValue<int>("Enter group: ");
 
     ifstream database("students.txt");
@@ -294,9 +304,13 @@ void viewGroupEntries() {
 
 // Просмотр 5 лучших студентов с средней оценкой за прошедную сессию
 void top5() {
-    cout << "Top 5 students with highest average grade.\n";
     int c = countEntries();
+    if (c == 0) {
+        cout << "Database has no entries!\n";
+        return;
+    }
 
+    cout << "Top 5 students with highest average grade.\n";
     ifstream database("students.txt");
 
     if (database.is_open())
@@ -343,6 +357,10 @@ void top5() {
 // Подсчёт м/ж
 void separateBySex() {
     int c = countEntries();
+    if (c == 0) {
+        cout << "Database has no entries!\n";
+        return;
+    }
 
     ifstream database("students.txt");
 
@@ -388,9 +406,13 @@ void separateBySex() {
 
 // Фильтрация студентов по их худщей оценке
 void viewByGrades(int lowest = 3) {
-    cout << "Viewing students with lowest grade " << lowest << ".\n";
     int c = countEntries();
+    if (c == 0) {
+        cout << "Database has no entries!\n";
+        return;
+    }
 
+    cout << "Viewing students with lowest grade - " << lowest << ".\n";
     ifstream database("students.txt");
 
     if (database.is_open())
@@ -449,8 +471,13 @@ void viewByGrades(int lowest = 3) {
 
 // Фильтрация студентов по их номеру в списке
 void viewById() {
-    cout << "Viewing students with specific IDs in list.\n";
     int c = countEntries();
+    if (c == 0) {
+        cout << "Database has no entries!\n";
+        return;
+    }
+
+    cout << "Viewing students with specific IDs in list.\n";
     int eId = readValue<int>("Enter list ID: ");
 
     ifstream database("students.txt");
@@ -506,6 +533,12 @@ void viewById() {
 }
 
 void printEntries() {
+    int c = countEntries();
+    if (c == 0) {
+        cout << "Database has no entries!\n";
+        return;
+    }
+
 	ifstream database("students.txt");
 	if (database.is_open())
 	{
@@ -513,7 +546,7 @@ void printEntries() {
             << "ID  Faculty  Course Group  Id   Sex  Age  Name                     Last Updated & Grades\n"
             << "----------------------------------------------------------------------------------------\n";
 
-        for(int i = 0; i < countEntries(); i++) {
+        for(int i = 0; i < c; i++) {
             Student student;
             getline(database, student.fullname, '\n');
             database >> student.sex;
@@ -561,7 +594,7 @@ int main()
             "4. View students from group\n"
             "5. Top 5 students with highest average grades\n"
             "6. Count males/females\n"
-            "7. View students with lowest grade 3\n"
+            "7. View students with lowest grade 3 (no scholarship)\n"
             "8. View students with lowest grade 4\n"
             "9. View students with lowest grade 5\n"
             "10. View students with specific list id\n\n";

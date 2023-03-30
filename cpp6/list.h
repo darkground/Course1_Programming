@@ -10,10 +10,10 @@ struct List {
     ListNode* head;
 };
 
-List* listCreate(int);
+List* listCreate(int n = 0);
 void listClear(List*);
-ListNode* listAdd(List*, int);
+ListNode* listAdd(List*, int n = 0);
 void listRemove(List*, unsigned);
 ListNode* listItem(List*, unsigned);
-ListNode* listInsert(List*, unsigned, int);
+ListNode* listInsert(List*, unsigned, int n = 0);
 unsigned listLength(List*);

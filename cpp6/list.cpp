@@ -4,7 +4,7 @@
 * Создание списка с N готовыми элементами
 * int n - количество = 0
 */
-List* listCreate(int n = 0) {
+List* listCreate(int n) {
     List* list = new List{};
     if (n <= 0)
         return list;
@@ -23,29 +23,6 @@ List* listCreate(int n = 0) {
     list->length = n;
 
     return list;
-}
-
-/*
-* Добавить элемент в конец списка
-* List* list - указатель на список
-* int value - число = 0
-*/
-ListNode* listAdd(List* list, int value = 0) {
-    ListNode* newNode = new ListNode;
-    newNode->data = value;
-
-    if (list->head) {
-        ListNode* node = list->head;
-        while (node->next)
-            node = node->next;
-        newNode->prev = node;
-        node->next = newNode;
-    }
-    else
-        list->head = newNode;
-
-    list->length++;
-    return newNode;
 }
 
 /*

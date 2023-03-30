@@ -126,6 +126,25 @@ int main()
                 list = step1_input();
                 cout << "List generation complete." << endl;
                 break;
+            case 5: {
+                if (!list) {
+                    cout << "Generate a list first!" << endl;
+                    break;
+                } 
+                int n1 = 0;
+                int n2 = 0;
+                do {
+                    n1 = readValue<int>("Element index N1: ");
+                } while (n1 < 0 || n1 >= list->length);
+                do {
+                    n2 = readValue<int>("Element index N2: ");
+                } while (n2 < 0 || n2 >= list->length);
+                if (n1 == n2)
+                    cout << "You entered same indexes.";
+                else
+                    listSwap(list, n1, n2);
+            }
+                break;
             default:
                 cout << "\nCategory with number " << choice << " does not exist." << endl;
                 break;

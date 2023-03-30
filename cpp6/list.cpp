@@ -1,4 +1,7 @@
 #include "list.h"
+#include <iostream>
+
+using namespace std;
 
 /*
 * Создание списка с N готовыми элементами
@@ -129,4 +132,34 @@ ListNode* listInsert(List* list, unsigned index, int value)
     }
     list->length++;
     return item;
+}
+
+/*
+* Поменять элементы местами по индексу. При одинаковых индексах или при одном индексе > length список не будет изменён.
+* List* list - указатель на список
+* unsigned index1 - первый индекс в списке
+* unsigned index2 - второй индекс в списке
+*/
+void listSwap(List* list, unsigned index1, unsigned index2)
+{
+    ListNode* node1 = listItem(list, index1);
+    ListNode* node2 = listItem(list, index2);
+    if (index1 == index2 || !node1 || !node2)
+        return;
+    
+    if (node1->prev)
+        node1->prev->next = node2;
+    if (node2->prev)
+        node2->prev->next = node1;
+    std::swap(node1->prev, node2->prev);
+    if (node2->next)
+        node2->next->prev = node1;
+    if (node1->next)
+        node1->next->prev = node2;
+    std::swap(node1->next, node2->next);
+
+    if ((list->head) == node1)
+        list->head = node2;
+    else if ((list->head) == node2)
+        list->head = node1;
 }

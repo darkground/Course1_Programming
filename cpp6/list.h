@@ -16,4 +16,5 @@ ListNode* listAdd(List*, int n = 0);
 void listRemove(List*, unsigned);
 ListNode* listItem(List*, unsigned);
 ListNode* listInsert(List*, unsigned, int n = 0);
+void listSwap(List*, unsigned, unsigned);
 unsigned listLength(List*);

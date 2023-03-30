@@ -131,7 +131,7 @@ ListNode* listInsert(List* list, unsigned index, int value)
 {
     ListNode* item = new ListNode;
     item->data = value;
-    if (!(list->head)) // � ������ ��� ���������
+    if (!(list->head)) // Когда в списке нет элементов
         list->head = item;
     else if (index == 0) {
         ListNode* first = list->head;
@@ -146,7 +146,7 @@ ListNode* listInsert(List* list, unsigned index, int value)
             prev = prev->next;
         item->prev = prev;
         item->next = prev->next;
-        if (prev->next) // ���� prev - �� ��������� ������� � �������
+        if (prev->next) // Если prev->next == nullptr, то prev - последний элемент в списке
             prev->next->prev = item;
         prev->next = item;
     }

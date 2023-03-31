@@ -80,8 +80,9 @@ List* step1_input() {
         } else {
             ListNode* curr = new ListNode;
             curr->data = val;
-            prev->next = curr;
             curr->prev = prev;
+            if (prev) // C6011??
+                prev->next = curr;
             prev = curr;
         }
         list->length++;
@@ -126,6 +127,39 @@ int main()
                 list = step1_input();
                 cout << "List generation complete." << endl;
                 break;
+            case 3: {
+                if (!list) {
+                    cout << "Generate a list first!" << endl;
+                    break;
+                }
+                int i = 0;
+                do {
+                    i = readValue<int>("Element index I: ");
+                } while (i < 0 || i >= list->length);
+                int v = readValue<int>("Element value V: ");
+                auto t1 = steady_clock::now();
+                listInsert(list, i, v);
+                auto t2 = steady_clock::now();
+                auto result = duration_cast<nanoseconds>(t2 - t1);
+                cout << "Element inserted, took " << result.count() << " nanoseconds." << endl;
+            }
+                  break;
+            case 4: {
+                if (!list) {
+                    cout << "Generate a list first!" << endl;
+                    break;
+                }
+                int i = 0;
+                do {
+                    i = readValue<int>("Element index I: ");
+                } while (i < 0 || i >= list->length);
+                auto t1 = steady_clock::now();
+                listRemove(list, i);
+                auto t2 = steady_clock::now();
+                auto result = duration_cast<nanoseconds>(t2 - t1);
+                cout << "Element removed, took " << result.count() << " nanoseconds." << endl;
+            }
+                  break;
             case 5: {
                 if (!list) {
                     cout << "Generate a list first!" << endl;
@@ -141,8 +175,13 @@ int main()
                 } while (n2 < 0 || n2 >= list->length);
                 if (n1 == n2)
                     cout << "You entered same indexes.";
-                else
+                else {
+                    auto t1 = steady_clock::now();
                     listSwap(list, n1, n2);
+                    auto t2 = steady_clock::now();
+                    auto result = duration_cast<nanoseconds>(t2 - t1);
+                    cout << "Elements swapped, took " << result.count() << " nanoseconds." << endl;
+                }
             }
                 break;
             default:

@@ -12,7 +12,6 @@ struct List {
 
 List* listCreate(int n = 0);
 void listClear(List*);
-ListNode* listAdd(List*, int n = 0);
 void listRemove(List*, unsigned);
 ListNode* listItem(List*, unsigned);
 ListNode* listInsert(List*, unsigned, int n = 0);

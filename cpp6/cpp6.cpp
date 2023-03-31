@@ -115,6 +115,7 @@ void step1_input(List*& list, Dynarr*& arr) {
 
 int main()
 {
+    bool notEqual = false;
     List* list = 0;
     Dynarr* arr = 0;
     while (true) {
@@ -129,7 +130,8 @@ int main()
             "3. Insert element into list & array by index\n"
             "4. Remove element from list & array by index\n"
             "5. Swap elements in list & array by index\n"
-            "6. Get element in list & array by index\n\n";
+            "6. Get element in list & array by index\n"
+            "7. Individual task\n\n";
         int choice = readValue<int>("Type a number to continue: ");
         cout << endl;
         switch (choice) {
@@ -153,6 +155,7 @@ int main()
                 srand(t);
                 step1_array_random(arr, n);
                 auto t3 = steady_clock::now();
+                notEqual = false;
                 auto list_t = duration_cast<nanoseconds>(t2 - t1);
                 auto arr_t = duration_cast<nanoseconds>(t3 - t2);
                 cout << "List generation complete in " << list_t.count() << " nanoseconds." << endl;
@@ -173,6 +176,10 @@ int main()
                     cout << "Generate a list/array first!" << endl;
                     break;
                 }
+                if (notEqual) {
+                    cout << "New list/array should be generated before inserting (speed cannot be compared, elements are not equal)" << endl;
+                    break;
+                }
                 int i = 0;
                 do {
                     i = readValue<int>("Element index I: ");
@@ -183,6 +190,7 @@ int main()
                 auto t2 = steady_clock::now();
                 dynarrInsert(arr, i, v);
                 auto t3 = steady_clock::now();
+                notEqual = false;
                 auto list_t = duration_cast<nanoseconds>(t2 - t1);
                 auto arr_t = duration_cast<nanoseconds>(t3 - t2);
                 cout << "Element inserted into list, took " << list_t.count() << " nanoseconds." << endl;
@@ -192,6 +200,10 @@ int main()
             case 4: {
                 if (!list) {
                     cout << "Generate a list/array first!" << endl;
+                    break;
+                }
+                if (notEqual) {
+                    cout << "New list/array should be generated before removing (speed cannot be compared, elements are not equal)" << endl;
                     break;
                 }
                 if (list->length == 0) {
@@ -216,6 +228,10 @@ int main()
             case 5: {
                 if (!list) {
                     cout << "Generate a list/array first!" << endl;
+                    break;
+                }
+                if (notEqual) {
+                    cout << "New list/array should be generated before swapping (speed cannot be compared, elements are not equal)" << endl;
                     break;
                 }
                 int n1 = 0;
@@ -246,6 +262,10 @@ int main()
                     cout << "Generate a list/array first!" << endl;
                     break;
                 }
+                if (notEqual) {
+                    cout << "New list/array should be generated before getting (speed cannot be compared, elements are not equal)" << endl;
+                    break;
+                }
                 if (list->length == 0) {
                     cout << "List/array has no elements!" << endl;
                     break;
@@ -263,6 +283,27 @@ int main()
                 auto arr_t = duration_cast<nanoseconds>(t2 - t1);
                 cout << "Element value in list: " << v1 << ", took " << list_t.count() << " nanoseconds." << endl;
                 cout << "Element value in array: " << v2 << ", took " << arr_t.count() << " nanoseconds." << endl;
+            }
+                  break;
+            case 7: {
+                /*
+                *   Увеличьте каждое значение исходного динамического массива на случайное число (в диапазоне от 0 до 5).
+                *   Добавьте в двусвязный список все положительные элементы динамического массива.
+                */
+                if (!list) {
+                    cout << "Generate a list/array first!" << endl;
+                    break;
+                }
+                auto t1 = steady_clock::now();
+                for (int i = 0; i < arr->length; i++) {
+                    arr->arr[i] += rand() % 10 - 5;
+                    if (arr->arr[i] > 0)
+                        listInsert(list, list->length + 1, arr->arr[i]);
+                }
+                auto t2 = steady_clock::now();
+                notEqual = true;
+                auto t = duration_cast<nanoseconds>(t2 - t1);
+                cout << "Operation took " << t.count() << " nanoseconds." << endl;
             }
                   break;
             default:

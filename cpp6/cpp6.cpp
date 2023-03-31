@@ -166,7 +166,7 @@ int main()
                 }
 
                 step1_input(list, arr);
-                cout << "List generation complete." << endl;
+                cout << "List/array generation complete." << endl;
                 break;
             case 3: {
                 if (!list) {
@@ -191,11 +191,11 @@ int main()
                   break;
             case 4: {
                 if (!list) {
-                    cout << "Generate a list first!" << endl;
+                    cout << "Generate a list/array first!" << endl;
                     break;
                 }
                 if (list->length == 0) {
-                    cout << "List has no elements!" << endl;
+                    cout << "List/array has no elements!" << endl;
                     break;
                 }
                 int i = 0;
@@ -215,7 +215,7 @@ int main()
                   break;
             case 5: {
                 if (!list) {
-                    cout << "Generate a list first!" << endl;
+                    cout << "Generate a list/array first!" << endl;
                     break;
                 }
                 int n1 = 0;

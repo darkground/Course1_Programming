@@ -75,6 +75,7 @@ void listRemove(List* list, unsigned index)
         if (prevItem) {
             ListNode* delItem = prevItem->next;
             prevItem->next = delItem->next;
+
             if (prevItem->next)
                 prevItem->next->prev = prevItem;
             delete delItem;

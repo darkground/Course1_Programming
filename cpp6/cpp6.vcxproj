@@ -128,9 +128,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="cpp6.cpp" />
+    <ClCompile Include="dynarr.cpp" />
     <ClCompile Include="list.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="dynarr.h" />
     <ClInclude Include="list.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

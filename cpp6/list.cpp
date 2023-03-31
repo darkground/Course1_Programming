@@ -1,7 +1,5 @@
-#include "list.h"
 #include <iostream>
-
-using namespace std;
+#include "list.h"
 
 /*
 * Создание списка с N готовыми элементами
@@ -77,7 +75,8 @@ void listRemove(List* list, unsigned index)
         if (prevItem) {
             ListNode* delItem = prevItem->next;
             prevItem->next = delItem->next;
-            prevItem->next->prev = prevItem;
+            if (prevItem->next)
+                prevItem->next->prev = prevItem;
             delete delItem;
             list->length--;
         }

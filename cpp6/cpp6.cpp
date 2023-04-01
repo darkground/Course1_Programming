@@ -171,6 +171,7 @@ int main()
                 }
 
                 step1Input(list, arr);
+                notEqual = false;
                 cout << "List/array generation complete." << endl;
                 break;
             case 3: {

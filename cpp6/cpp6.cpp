@@ -54,7 +54,7 @@ void printDynarr(Dynarr* arr) {
         cout << "Array is undefined.\n";
 }
 
-void step1_list_random(List*& list, unsigned n) {
+void step1ListRandom(List*& list, unsigned n) {
     list = listCreate();
     list->length = n;
 
@@ -73,13 +73,13 @@ void step1_list_random(List*& list, unsigned n) {
     }
 }
 
-void step1_array_random(Dynarr*& arr, unsigned n) {
+void step1ArrayRandom(Dynarr*& arr, unsigned n) {
     arr = dynarrCreate();
     for (int i = 0; i < n; i++)
         dynarrAdd(arr, rand() % 100);
 }
 
-void step1_input(List*& list, Dynarr*& arr) {
+void step1Input(List*& list, Dynarr*& arr) {
     cout << "Input numbers line by line, finish by typing any non-digit character (e.g. \"a\").\n";
     
     list = listCreate();
@@ -152,10 +152,10 @@ int main()
                 auto t = time(NULL);
                 auto t1 = steady_clock::now();
                 srand(t);
-                step1_list_random(list, n);
+                step1ListRandom(list, n);
                 auto t2 = steady_clock::now();
                 srand(t);
-                step1_array_random(arr, n);
+                step1ArrayRandom(arr, n);
                 auto t3 = steady_clock::now();
                 notEqual = false;
                 auto list_t = duration_cast<nanoseconds>(t2 - t1);
@@ -170,7 +170,7 @@ int main()
                     dynarrClear(arr);
                 }
 
-                step1_input(list, arr);
+                step1Input(list, arr);
                 cout << "List/array generation complete." << endl;
                 break;
             case 3: {

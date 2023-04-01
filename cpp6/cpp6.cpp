@@ -129,9 +129,11 @@ int main()
             "2. Create list & array until stopped (Input numbers)\n"
             "3. Insert element into list & array by index\n"
             "4. Remove element from list & array by index\n"
-            "5. Swap elements in list & array by index\n"
-            "6. Get element in list & array by index\n"
-            "7. Individual task\n\n";
+            "5. Remove element from list & array by value\n"
+            "6. Swap elements in list & array by index\n"
+            "7. Get element in list & array by index\n"
+            "8. Get element in list & array by value\n"
+            "9. Individual task\n\n";
         int choice = readValue<int>("Type a number to continue: ");
         cout << endl;
         switch (choice) {
@@ -231,6 +233,54 @@ int main()
                     break;
                 }
                 if (notEqual) {
+                    cout << "New list/array should be generated before removing (speed cannot be compared, elements are not equal)" << endl;
+                    break;
+                }
+                if (list->length == 0) {
+                    cout << "List/array has no elements!" << endl;
+                    break;
+                }
+                int v = readValue<int>("Element value V: ");
+                auto t1 = steady_clock::now();
+                ListNode* prev = list->head;
+                int nodeindex = 0;
+                while (prev) {
+                    if (prev->data == v)
+                        break;
+                    nodeindex++;
+                    prev = prev->next;
+                }
+                
+                if (nodeindex < list->length)
+                    listRemove(list, nodeindex);
+                auto t2 = steady_clock::now();
+                int index = -1;
+                for (int i = 0; i < arr->length; i++) {
+                    int val = dynarrItem(arr, i);
+                    if (val == v) {
+                        index = i;
+                        break;
+                    }
+                }
+                if (index != -1)
+                    dynarrRemove(arr, index);
+                auto t3 = steady_clock::now();
+                auto list_t = duration_cast<nanoseconds>(t2 - t1);
+                auto arr_t = duration_cast<nanoseconds>(t3 - t2);
+                if (index == -1) {
+                    cout << "Element not found" << endl; 
+                } else {
+                    cout << "Element removed from list, took " << list_t.count() << " nanoseconds." << endl;
+                    cout << "Element removed from list, took " << arr_t.count() << " nanoseconds." << endl;
+                }
+            }
+                  break;
+            case 6: {
+                if (!list) {
+                    cout << "Generate a list/array first!" << endl;
+                    break;
+                }
+                if (notEqual) {
                     cout << "New list/array should be generated before swapping (speed cannot be compared, elements are not equal)" << endl;
                     break;
                 }
@@ -257,7 +307,7 @@ int main()
                 }
             }
                   break;
-            case 6: {
+            case 7: {
                 if (!list) {
                     cout << "Generate a list/array first!" << endl;
                     break;
@@ -285,7 +335,50 @@ int main()
                 cout << "Element value in array: " << v2 << ", took " << arr_t.count() << " nanoseconds." << endl;
             }
                   break;
-            case 7: {
+            case 8: {
+                if (!list) {
+                    cout << "Generate a list/array first!" << endl;
+                    break;
+                }
+                if (notEqual) {
+                    cout << "New list/array should be generated before removing (speed cannot be compared, elements are not equal)" << endl;
+                    break;
+                }
+                if (list->length == 0) {
+                    cout << "List/array has no elements!" << endl;
+                    break;
+                }
+                int v = readValue<int>("Element value V: ");
+                auto t1 = steady_clock::now();
+                ListNode* prev = list->head;
+                int nodeindex = 0;
+                while (prev) {
+                    if (prev->data == v)
+                        break;
+                    nodeindex++;
+                    prev = prev->next;
+                }
+                auto t2 = steady_clock::now();
+                int index = -1;
+                for (int i = 0; i < arr->length; i++) {
+                    int val = dynarrItem(arr, i);
+                    if (val == v) {
+                        index = i;
+                        break;
+                    }
+                }
+                auto t3 = steady_clock::now();
+                auto list_t = duration_cast<nanoseconds>(t2 - t1);
+                auto arr_t = duration_cast<nanoseconds>(t3 - t2);
+                if (index == -1) {
+                    cout << "Element not found" << endl; 
+                } else {
+                    cout << "Element index in list: " << nodeindex << ", took " << list_t.count() << " nanoseconds." << endl;
+                    cout << "Element index in array: " << index << ", took " << arr_t.count() << " nanoseconds." << endl;
+                }
+            }
+                  break;
+            case 9: {
                 /*
                 *   Увеличьте каждое значение исходного динамического массива на случайное число (в диапазоне от 0 до 5).
                 *   Добавьте в двусвязный список все положительные элементы динамического массива.

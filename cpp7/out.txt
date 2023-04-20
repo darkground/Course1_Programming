@@ -1,0 +1,54 @@
+Token: 3
+Out: 
+Ops: 
+
+Token: +
+Out: 3 
+Ops: 
+
+Token: 4
+Out: 3 
+Ops: + 
+
+Token: *
+Out: 3 4 
+Ops: + 
+
+Token: 2
+Out: 3 4 
+Ops: + * 
+
+Token: /
+Out: 3 4 2 
+Ops: + * 
+
+Token: (
+Out: 3 4 2 * 
+Ops: + / 
+
+Token: 1
+Out: 3 4 2 * 
+Ops: + / ( 
+
+Token: -
+Out: 3 4 2 * 1 
+Ops: + / ( 
+
+Token: 5
+Out: 3 4 2 * 1 
+Ops: + / ( - 
+
+Token: )
+Out: 3 4 2 * 1 5 
+Ops: + / ( - 
+
+Token: ^
+Out: 3 4 2 * 1 5 - 
+Ops: + / 
+
+Token: x
+Out: 3 4 2 * 1 5 - 
+Ops: + / ^ 
+
+Moving operations to main stack.
+Result: 3 4 2 * 1 5 - 5 ^ / + 

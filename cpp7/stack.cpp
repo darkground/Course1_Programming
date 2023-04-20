@@ -98,10 +98,9 @@ StackNode* stackGetLastButOne(StackNode* head) {
 	return head;
 }
 
-void stackPrint(const StackNode* head, ostream& sout) {
+void stackPrint(StackNode* head, ostream& sout) {
 	while (head) {
 		sout << head->value << " ";
 		head = head->next;
 	}
-	sout << endl;
 }

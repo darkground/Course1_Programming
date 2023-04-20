@@ -17,4 +17,4 @@ void stackPushBack(StackNode*, string);
 void stackClear(StackNode*);
 string stackPop(StackNode*&);
 string stackPopBack(StackNode*);
-void stackPrint(const StackNode*, ostream&);
+void stackPrint(StackNode*, ostream&);

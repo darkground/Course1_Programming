@@ -66,10 +66,6 @@ bool isNumber(const string& str) {
     return !str.empty() && it == str.end();
 }
 
-bool isNumber(char chr) {
-	return chr >= '0' && chr <= '9';
-}
-
 vector<string> tokenize(const string& text) {
 	vector<string> tokens{};
 	istringstream input(text);
@@ -84,6 +80,12 @@ bool shouldMoveOperation(string token, StackNode* opstack) {
 	return weights.find(last->value)->second >= weights.find(token)->second;
 }
 
+void print(string str, ostream& os1, ostream& os2) {
+	os1 << str;
+	os2 << str;
+}
+
+
 void reversePolishNotation(string& inpt_str) {
 	ofstream ofs("out.txt");
 	string current_str;
@@ -91,18 +93,11 @@ void reversePolishNotation(string& inpt_str) {
 	StackNode* outStack = NULL;
     StackNode* opStack = NULL;
 	for (const auto& token : str_tokens) {
-		cout << "Token: " << token;
-		ofs << "Token: " << token;
-		cout << "\nOut: ";
-		ofs << "\nOut: ";
-		stackPrint(outStack, cout);
-		stackPrint(outStack, ofs);
-		cout << "\nOps: ";
-		ofs << "\nOps: ";
-		stackPrint(opStack, cout);
-		stackPrint(opStack, ofs);
-		cout << "\n" << endl;
-		ofs << "\n" << endl;
+		print("Token: " + token + "\nOut: ", cout, ofs);
+		stackPrint(outStack, cout); stackPrint(outStack, ofs);
+		print("\nOps: ", cout, ofs);
+		stackPrint(opStack, cout); stackPrint(opStack, ofs);
+		print("\n\n", cout, ofs);
 		if (isNumber(token))
 			stackAdd(outStack, token);
 		else if (isOperation(token)) {
@@ -126,21 +121,26 @@ void reversePolishNotation(string& inpt_str) {
 			} else
 				stackPushBack(opStack, token);
 		}
-		else if (isLiteral(token))
-			stackAdd(outStack, to_string(variables.find(token)->second));
-		else
-			throw "Unexpected token " + token;
+		else {
+			auto found = variables.find(token);
+			if (found == variables.end()) {
+				cout << "Enter value for " + token + ": ";
+				ofs << "Enter value for " + token + ": ";
+				int var = readValue<int>();
+				ofs << var << endl;
+				variables[token] = var;
+				stackAdd(outStack, to_string(var));
+			} else {
+				stackAdd(outStack, to_string(found->second));
+			}
+		}
 	}
-	cout << "Moving operations to main stack." << endl;
-	ofs << "Moving operations to main stack." << endl;
+	print("Moving operations to main stack.\n", cout, ofs);
 	while (opStack)
-		stackPushBack(outStack, stackSize(opStack) > 1 ? stackPopBack(opStack) : stackPop(opStack));
-	cout << "Result: ";
-	ofs << "Result: ";
-	stackPrint(outStack, cout);
-	stackPrint(outStack, ofs);
-	cout << endl;
-	ofs << endl;
+		stackPushBack(outStack, stackTake(opStack));
+	print("Result: ", cout, ofs);
+	stackPrint(outStack, cout); stackPrint(outStack, ofs);
+	print("\n", cout, ofs);
 }
 
 int computeRpn(string rpn) {
@@ -183,7 +183,7 @@ int computeRpn(string rpn) {
 
 int main()
 {
-    string x = "3 + 4 * 32 / ( 1 - 5 ) ^ x";
+    string x = "3 + 4 * 32 / ( 1 - y ) ^ y";
 	reversePolishNotation(x);
 	cout << "Computed: " << computeRpn("3 4 32 * 1 5 - 2 ^ / +");
 	return 0;

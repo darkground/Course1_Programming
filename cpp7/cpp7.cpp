@@ -108,16 +108,16 @@ void reversePolishNotation(string& inpt_str) {
 				stackAdd(opStack, token);
 			else if (token == ")") {
 				while (opStack && current_str != "(") {
-					current_str = stackSize(opStack) > 1 ? stackPopBack(opStack) : stackPop(opStack);
+					current_str = stackTake(opStack);
 					stackAdd(outStack, current_str);
 					current_str = stackLast(opStack)->value;
 				}
 				if (!opStack)
 					throw "Unpaired bracket encountered";
 				current_str.clear();
-				stackSize(opStack) > 1 ? stackPopBack(opStack) : stackPop(opStack);
+				stackTake(opStack);
 			} else if (shouldMoveOperation(token, opStack)) {
-				stackPushBack(outStack, stackSize(opStack) > 1 ? stackPopBack(opStack) : stackPop(opStack));
+				stackPushBack(outStack, stackTake(opStack));
 				stackAdd(opStack, token);
 			} else
 				stackPushBack(opStack, token);
@@ -139,9 +139,52 @@ void reversePolishNotation(string& inpt_str) {
 	ofs << endl;
 }
 
+int computeRpn(string rpn) {
+	rpn.push_back(' ');
+	istringstream reader(rpn);
+	StackNode* outStack = NULL;
+	char token;
+	while (!reader.eof()) {
+		int val;
+		while (reader >> val)
+			stackAdd(outStack, to_string(val));
+		if (!reader.eof()) {
+			reader.clear();
+			reader.unget();
+			reader >> token;
+			if (stackSize(outStack) < 2)
+				throw "Invalid operation order";
+			int right = stoi(stackTake(outStack)), left = stoi(stackTake(outStack));
+			switch (token) {
+				case '+': 
+					stackAdd(outStack, to_string(left + right));
+					break;
+				case '-': 
+					stackAdd(outStack, to_string(left - right));
+					break;
+				case '/': 
+					stackAdd(outStack, to_string(left / right));
+					break;
+				case '*': 
+					stackAdd(outStack, to_string(left * right));
+					break;
+				case '^': 
+					stackAdd(outStack, to_string(pow(left, right)));
+					break;
+				default:
+					throw "Unknown operator " + token;
+			}
+		}
+	}
+	if (stackSize(outStack) != 1)
+		throw "Invalid stack size";
+	return stoi(stackTake(outStack));
+}
+
 int main()
 {
     string x = "3 + 4 * 2 / ( 1 - 5 ) ^ x";
 	reversePolishNotation(x);
+	cout << "Computed: " << computeRpn("3 4 32 * 1 5 - 2 ^ / +");
 	return 0;
 }

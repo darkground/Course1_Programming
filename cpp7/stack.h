@@ -12,6 +12,7 @@ StackNode* stackCreate(const string&);
 StackNode* stackLast(StackNode*);
 StackNode* stackGetLastButOne(StackNode*);
 void stackAdd(StackNode*&, const string&);
+string stackTake(StackNode*&);
 void stackPush(StackNode*&, string);
 void stackPushBack(StackNode*, string);
 void stackClear(StackNode*);

@@ -25,6 +25,10 @@ void stackAdd(StackNode*& head, const string& data) {
 		stackPushBack(head, data);
 }
 
+string stackTake(StackNode*& head) {
+	return stackSize(head) > 1 ? stackPopBack(head) : stackPop(head);
+}
+
 void stackPush(StackNode*& head, string data) {
 	StackNode* first = new StackNode;
 	first->value = data;
@@ -42,9 +46,8 @@ void stackPushBack(StackNode* head, string data) {
 
 string stackPop(StackNode*& head) {
 	StackNode* prev = NULL;
-	if (head == NULL) {
-		exit(-1);
-	}
+	if (head == NULL)
+		return NULL;
 	prev = head;
 	string val = head->value;
 	head = head->next;

@@ -1,14 +1,94 @@
-Token: 5
+Token: 15
 Out: 
 Ops: 
 
-Token: +
-Out: 5 
+Token: /
+Out: 15 
 Ops: 
 
-Token: 5
-Out: 5 
-Ops: + 
+Token: (
+Out: 15 
+Ops: / 
+
+Token: 7
+Out: 15 
+Ops: / ( 
+
+Token: -
+Out: 15 7 
+Ops: / ( 
+
+Token: (
+Out: 15 7 
+Ops: / ( - 
+
+Token: 1
+Out: 15 7 
+Ops: / ( - ( 
+
+Token: +
+Out: 15 7 1 
+Ops: / ( - ( 
+
+Token: 1
+Out: 15 7 1 
+Ops: / ( - ( + 
+
+Token: )
+Out: 15 7 1 1 
+Ops: / ( - ( + 
+
+Token: )
+Out: 15 7 1 1 + 
+Ops: / ( - 
+
+Token: *
+Out: 15 7 1 1 + - 
+Ops: / 
+
+Token: 3
+Out: 15 7 1 1 + - / 
+Ops: * 
+
+Token: -
+Out: 15 7 1 1 + - / 3 
+Ops: * 
+
+Token: (
+Out: 15 7 1 1 + - / 3 * 
+Ops: - 
+
+Token: 2
+Out: 15 7 1 1 + - / 3 * 
+Ops: - ( 
+
+Token: +
+Out: 15 7 1 1 + - / 3 * 2 
+Ops: - ( 
+
+Token: (
+Out: 15 7 1 1 + - / 3 * 2 
+Ops: - ( + 
+
+Token: 1
+Out: 15 7 1 1 + - / 3 * 2 
+Ops: - ( + ( 
+
+Token: +
+Out: 15 7 1 1 + - / 3 * 2 1 
+Ops: - ( + ( 
+
+Token: 1
+Out: 15 7 1 1 + - / 3 * 2 1 
+Ops: - ( + ( + 
+
+Token: )
+Out: 15 7 1 1 + - / 3 * 2 1 1 
+Ops: - ( + ( + 
+
+Token: )
+Out: 15 7 1 1 + - / 3 * 2 1 1 + 
+Ops: - ( + 
 
 Moving operations to main stack.
-Result: 5 5 + 
+Result: 15 7 1 1 + - / 3 * 2 1 1 + + - 

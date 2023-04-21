@@ -84,8 +84,7 @@ void print(string str, ostream& os1, ostream& os2) {
 	os2 << str;
 }
 
-
-void reversePolishNotation(string& inpt_str) {
+string reversePolishNotation(string& inpt_str) {
 	ofstream ofs("out.txt");
 	string current_str;
     vector<string> str_tokens = tokenize(inpt_str);
@@ -142,6 +141,29 @@ void reversePolishNotation(string& inpt_str) {
 	print("Result: ", cout, ofs);
 	stackPrint(outStack, cout); stackPrint(outStack, ofs);
 	print("\n", cout, ofs);
+	string outp;
+	while (outStack) {
+		outp += outStack->value + ' ';
+		outStack = outStack->next;
+	}
+	return outp;
+}
+
+void polishNotation(string& inpt_str) {
+	ofstream ofs("out.txt");
+	string inp;
+	for(int i = inpt_str.length() - 1; i >= 0; i--) {
+		if (inpt_str[i] == '(')
+			inp.push_back(')');
+		else if (inpt_str[i] == ')')
+			inp.push_back('(');
+		else
+			inp.push_back(inpt_str[i]);
+	}
+	reverse(inpt_str.begin(), inpt_str.end());
+	string outp = reversePolishNotation(inp);
+	reverse(outp.begin(), outp.end());
+	cout << outp << endl;
 }
 
 int computeRpn(string& rpn) {
@@ -182,6 +204,16 @@ int computeRpn(string& rpn) {
 	return stoi(stackPop(outStack));
 }
 
+int computePn(string& rpn) {
+	vector<string> tokens = tokenize(rpn);
+	reverse(tokens.begin(), tokens.end());
+	string rev;
+	for(const auto& token : tokens)
+		rev += token + ' ';
+	rev.pop_back();
+	return computeRpn(rev);
+}
+
 int main()
 {
 	while (true) {
@@ -198,7 +230,16 @@ int main()
         switch (choice) {
             case 0:
                 return 0;
-			case 1:
+			case 1: {
+				string inp;
+				cout << "Enter mathematical expression: ";
+				getline(cin, inp);
+				try {
+					polishNotation(inp);
+				} catch (const char* data) {
+					cout << "Error! " << data << endl;
+				}
+			}
 				break;
 			case 2: {
 				string inp;
@@ -211,7 +252,16 @@ int main()
 				}
 			}
 				break;
-			case 3:
+			case 3: {
+				string inp;
+				cout << "Enter polish notation expression: ";
+				getline(cin, inp);
+				try {
+					cout << "Result: " << computePn(inp) << endl;
+				} catch (const char* data) {
+					cout << "Parsing error! " << data << endl;
+				}
+			}
 				break;
 			case 4: {
 				string inp;

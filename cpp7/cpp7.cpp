@@ -4,7 +4,6 @@
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <stdexcept>
 #include "stack.h"
 
 using namespace std;
@@ -109,7 +108,10 @@ void reversePolishNotation(string& inpt_str) {
 				while (opStack && current_str != "(") {
 					current_str = stackTake(opStack);
 					stackAdd(outStack, current_str);
-					current_str = stackLast(opStack)->value;
+					StackNode* last = stackLast(opStack);
+					if (!last)
+						throw "Unpaired bracket encountered";
+					current_str = last->value;
 				}
 				if (!opStack)
 					throw "Unpaired bracket encountered";
@@ -124,8 +126,7 @@ void reversePolishNotation(string& inpt_str) {
 		else {
 			auto found = variables.find(token);
 			if (found == variables.end()) {
-				cout << "Enter value for " + token + ": ";
-				ofs << "Enter value for " + token + ": ";
+				print("Enter value for " + token + ": ", cout, ofs);
 				int var = readValue<int>();
 				ofs << var << endl;
 				variables[token] = var;
@@ -143,7 +144,7 @@ void reversePolishNotation(string& inpt_str) {
 	print("\n", cout, ofs);
 }
 
-int computeRpn(string rpn) {
+int computeRpn(string& rpn) {
 	istringstream reader(rpn);
 	StackNode* outStack = NULL;
 	string token;
@@ -183,8 +184,50 @@ int computeRpn(string rpn) {
 
 int main()
 {
-    string x = "3 + 4 * 32 / ( 1 - y ) ^ y";
-	reversePolishNotation(x);
-	cout << "Computed: " << computeRpn("3 4 32 * 1 5 - 2 ^ / +");
-	return 0;
+	while (true) {
+        system("cls");
+        cout <<
+            "Choose a category from below:\n"
+            "0. Exit\n"
+            "1. Convert expression into polish notation\n"
+            "2. Convert expression into reverse polish notation\n"
+            "3. Compute expression given in polish notation\n"
+            "4. Compute expression given in reverse polish notation\n\n";
+        int choice = readValue<int>("Type a number to continue: ");
+        cout << endl;
+        switch (choice) {
+            case 0:
+                return 0;
+			case 1:
+				break;
+			case 2: {
+				string inp;
+				cout << "Enter mathematical expression: ";
+				getline(cin, inp);
+				try {
+					reversePolishNotation(inp);
+				} catch (const char* data) {
+					cout << "Error! " << data << endl;
+				}
+			}
+				break;
+			case 3:
+				break;
+			case 4: {
+				string inp;
+				cout << "Enter reverse polish notation expression: ";
+				getline(cin, inp);
+				try {
+					cout << "Result: " << computeRpn(inp) << endl;
+				} catch (const char* data) {
+					cout << "Parsing error! " << data << endl;
+				}
+			}
+				break;
+            default:
+                cout << "\nCategory with number " << choice << " does not exist." << endl;
+                break;
+        }
+        system("pause");
+    }
 }

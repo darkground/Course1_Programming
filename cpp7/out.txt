@@ -1,54 +1,14 @@
-Token: 3
+Token: 5
 Out: 
 Ops: 
 
 Token: +
-Out: 3 
+Out: 5 
 Ops: 
 
-Token: 4
-Out: 3 
+Token: 5
+Out: 5 
 Ops: + 
 
-Token: *
-Out: 3 4 
-Ops: + 
-
-Token: 32
-Out: 3 4 
-Ops: + * 
-
-Token: /
-Out: 3 4 32 
-Ops: + * 
-
-Token: (
-Out: 3 4 32 * 
-Ops: + / 
-
-Token: 1
-Out: 3 4 32 * 
-Ops: + / ( 
-
-Token: -
-Out: 3 4 32 * 1 
-Ops: + / ( 
-
-Token: y
-Out: 3 4 32 * 1 
-Ops: + / ( - 
-
-Enter value for y: 5
-Token: )
-Out: 3 4 32 * 1 5 
-Ops: + / ( - 
-
-Token: ^
-Out: 3 4 32 * 1 5 - 
-Ops: + / 
-
-Token: y
-Out: 3 4 32 * 1 5 - 
-Ops: + / ^ 
-
-Moving operations to main stack.Result: 3 4 32 * 1 5 - 5 ^ / + 
+Moving operations to main stack.
+Result: 5 5 + 

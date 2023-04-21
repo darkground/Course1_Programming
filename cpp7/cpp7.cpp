@@ -66,6 +66,10 @@ bool isNumber(const string& str) {
     return !str.empty() && it == str.end();
 }
 
+bool isNumber(char chr) {
+	return chr >= '0' && chr <= '9';
+}
+
 vector<string> tokenize(const string& text) {
 	vector<string> tokens{};
 	istringstream input(text);
@@ -87,15 +91,15 @@ void reversePolishNotation(string& inpt_str) {
 	StackNode* outStack = NULL;
     StackNode* opStack = NULL;
 	for (const auto& token : str_tokens) {
-		std::cout << "Token: " << token;
+		cout << "Token: " << token;
 		ofs << "Token: " << token;
-		std::cout << "\nOut: ";
+		cout << "\nOut: ";
 		ofs << "\nOut: ";
-		stackPrint(outStack, std::cout);
+		stackPrint(outStack, cout);
 		stackPrint(outStack, ofs);
-		std::cout << "\nOps: ";
+		cout << "\nOps: ";
 		ofs << "\nOps: ";
-		stackPrint(opStack, std::cout);
+		stackPrint(opStack, cout);
 		stackPrint(opStack, ofs);
 		cout << "\n" << endl;
 		ofs << "\n" << endl;
@@ -123,7 +127,7 @@ void reversePolishNotation(string& inpt_str) {
 				stackPushBack(opStack, token);
 		}
 		else if (isLiteral(token))
-			stackAdd(outStack, std::to_string(variables.find(token)->second));
+			stackAdd(outStack, to_string(variables.find(token)->second));
 		else
 			throw "Unexpected token " + token;
 	}
@@ -140,22 +144,18 @@ void reversePolishNotation(string& inpt_str) {
 }
 
 int computeRpn(string rpn) {
-	rpn.push_back(' ');
 	istringstream reader(rpn);
 	StackNode* outStack = NULL;
-	char token;
+	string token;
 	while (!reader.eof()) {
-		int val;
-		while (reader >> val)
-			stackAdd(outStack, to_string(val));
-		if (!reader.eof()) {
-			reader.clear();
-			reader.unget();
-			reader >> token;
+		reader >> token;
+		if (isNumber(token)) {
+			stackAdd(outStack, token);
+		} else {
 			if (stackSize(outStack) < 2)
 				throw "Invalid operation order";
 			int right = stoi(stackTake(outStack)), left = stoi(stackTake(outStack));
-			switch (token) {
+			switch (token[0]) {
 				case '+': 
 					stackAdd(outStack, to_string(left + right));
 					break;
@@ -178,12 +178,12 @@ int computeRpn(string rpn) {
 	}
 	if (stackSize(outStack) != 1)
 		throw "Invalid stack size";
-	return stoi(stackTake(outStack));
+	return stoi(stackPop(outStack));
 }
 
 int main()
 {
-    string x = "3 + 4 * 2 / ( 1 - 5 ) ^ x";
+    string x = "3 + 4 * 32 / ( 1 - 5 ) ^ x";
 	reversePolishNotation(x);
 	cout << "Computed: " << computeRpn("3 4 32 * 1 5 - 2 ^ / +");
 	return 0;

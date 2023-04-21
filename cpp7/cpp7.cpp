@@ -84,8 +84,7 @@ void print(string str, ostream& os1, ostream& os2) {
 	os2 << str;
 }
 
-string reversePolishNotation(string& inpt_str) {
-	ofstream ofs("out.txt");
+string reversePolishNotation(string& inpt_str, ofstream& ofs) {
 	string current_str;
     vector<string> str_tokens = tokenize(inpt_str);
 	StackNode* outStack = NULL;
@@ -149,8 +148,7 @@ string reversePolishNotation(string& inpt_str) {
 	return outp;
 }
 
-void polishNotation(string& inpt_str) {
-	ofstream ofs("out.txt");
+void polishNotation(string& inpt_str, ofstream& ofs) {
 	string inp;
 	for(int i = inpt_str.length() - 1; i >= 0; i--) {
 		if (inpt_str[i] == '(')
@@ -161,12 +159,13 @@ void polishNotation(string& inpt_str) {
 			inp.push_back(inpt_str[i]);
 	}
 	reverse(inpt_str.begin(), inpt_str.end());
-	string outp = reversePolishNotation(inp);
+	print("Reversed initial string: " + inp + "\n", cout, ofs);
+	string outp = reversePolishNotation(inp, ofs);
 	reverse(outp.begin(), outp.end());
-	cout << outp << endl;
+	cout << "Reversing back.\nFinal result:" << outp << endl;
 }
 
-int computeRpn(string& rpn) {
+int computeRpn(string& rpn, ofstream& ofs, bool inverted = false) {
 	istringstream reader(rpn);
 	StackNode* outStack = NULL;
 	string token;
@@ -177,21 +176,35 @@ int computeRpn(string& rpn) {
 		} else {
 			if (stackSize(outStack) < 2)
 				throw "Invalid operation order";
-			int right = stoi(stackTake(outStack)), left = stoi(stackTake(outStack));
+			int left, right;
+			if (inverted) {
+				left = stoi(stackTake(outStack));
+				right = stoi(stackTake(outStack));
+			}
+			else {
+				right = stoi(stackTake(outStack));
+				left = stoi(stackTake(outStack));
+			}
+			
 			switch (token[0]) {
-				case '+': 
+				case '+':
+					cout << left << " + " << right << " = " << left + right << endl;
 					stackAdd(outStack, to_string(left + right));
 					break;
 				case '-': 
+					cout << left << " - " << right << " = " << left - right << endl;
 					stackAdd(outStack, to_string(left - right));
 					break;
 				case '/': 
+					cout << left << " / " << right << " = " << left / right << endl;
 					stackAdd(outStack, to_string(left / right));
 					break;
 				case '*': 
+					cout << left << " * " << right << " = " << left * right << endl;
 					stackAdd(outStack, to_string(left * right));
 					break;
 				case '^': 
+					cout << left << " ^ " << right << " = " << to_string((int)pow(left, right)) << endl;
 					stackAdd(outStack, to_string(pow(left, right)));
 					break;
 				default:
@@ -204,18 +217,19 @@ int computeRpn(string& rpn) {
 	return stoi(stackPop(outStack));
 }
 
-int computePn(string& rpn) {
+int computePn(string& rpn, ofstream& ofs) {
 	vector<string> tokens = tokenize(rpn);
 	reverse(tokens.begin(), tokens.end());
 	string rev;
 	for(const auto& token : tokens)
 		rev += token + ' ';
 	rev.pop_back();
-	return computeRpn(rev);
+	return computeRpn(rev, ofs, true);
 }
 
 int main()
 {
+	ofstream ofs ("out.txt");
 	while (true) {
         system("cls");
         cout <<
@@ -235,7 +249,7 @@ int main()
 				cout << "Enter mathematical expression: ";
 				getline(cin, inp);
 				try {
-					polishNotation(inp);
+					polishNotation(inp, ofs);
 				} catch (const char* data) {
 					cout << "Error! " << data << endl;
 				}
@@ -246,7 +260,7 @@ int main()
 				cout << "Enter mathematical expression: ";
 				getline(cin, inp);
 				try {
-					reversePolishNotation(inp);
+					reversePolishNotation(inp, ofs);
 				} catch (const char* data) {
 					cout << "Error! " << data << endl;
 				}
@@ -257,7 +271,7 @@ int main()
 				cout << "Enter polish notation expression: ";
 				getline(cin, inp);
 				try {
-					cout << "Result: " << computePn(inp) << endl;
+					cout << "Result: " << computePn(inp, ofs) << endl;
 				} catch (const char* data) {
 					cout << "Parsing error! " << data << endl;
 				}
@@ -268,7 +282,7 @@ int main()
 				cout << "Enter reverse polish notation expression: ";
 				getline(cin, inp);
 				try {
-					cout << "Result: " << computeRpn(inp) << endl;
+					cout << "Result: " << computeRpn(inp, ofs) << endl;
 				} catch (const char* data) {
 					cout << "Parsing error! " << data << endl;
 				}

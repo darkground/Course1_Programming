@@ -162,7 +162,7 @@ void polishNotation(string& inpt_str, ofstream& ofs) {
 	print("Reversed initial string: " + inp + "\n", cout, ofs);
 	string outp = reversePolishNotation(inp, ofs);
 	reverse(outp.begin(), outp.end());
-	cout << "Reversing back.\nFinal result:" << outp << endl;
+	print("Reversing back.\nFinal result:" + outp + "\n", cout, ofs);
 }
 
 int computeRpn(string& rpn, ofstream& ofs, bool inverted = false) {
@@ -188,23 +188,23 @@ int computeRpn(string& rpn, ofstream& ofs, bool inverted = false) {
 			
 			switch (token[0]) {
 				case '+':
-					cout << left << " + " << right << " = " << left + right << endl;
+					print(to_string(left) + " + " + to_string(right) + " = " + to_string(left + right) + '\n', cout, ofs);
 					stackAdd(outStack, to_string(left + right));
 					break;
 				case '-': 
-					cout << left << " - " << right << " = " << left - right << endl;
+					print(to_string(left) + " - " + to_string(right) + " = " + to_string(left - right) + '\n', cout, ofs);
 					stackAdd(outStack, to_string(left - right));
 					break;
 				case '/': 
-					cout << left << " / " << right << " = " << left / right << endl;
+					print(to_string(left) + " / " + to_string(right) + " = " + to_string(left / right) + '\n', cout, ofs);
 					stackAdd(outStack, to_string(left / right));
 					break;
 				case '*': 
-					cout << left << " * " << right << " = " << left * right << endl;
+					print(to_string(left) + " * " + to_string(right) + " = " + to_string(left * right) + '\n', cout, ofs);
 					stackAdd(outStack, to_string(left * right));
 					break;
 				case '^': 
-					cout << left << " ^ " << right << " = " << to_string((int)pow(left, right)) << endl;
+					print(to_string(left) + " ^ " + to_string(right) + " = " + to_string((int)pow(left, right)) + '\n', cout, ofs);
 					stackAdd(outStack, to_string(pow(left, right)));
 					break;
 				default:

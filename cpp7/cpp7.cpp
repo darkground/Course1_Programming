@@ -45,9 +45,7 @@ map<string, int> weights = {
     {")", 0}
 };
 
-map<string, int> variables = {
-	{"x", 5}
-};
+map<string, int> variables = {};
 
 bool isOperation(const string& str) {
 	auto res = weights.find(str);
@@ -85,6 +83,7 @@ void print(string str, ostream& os1, ostream& os2) {
 }
 
 string reversePolishNotation(string& inpt_str, ofstream& ofs, bool silent = false) {
+	variables.clear();
 	string current_str;
     vector<string> str_tokens = tokenize(inpt_str);
 	StackNode* outStack = NULL;

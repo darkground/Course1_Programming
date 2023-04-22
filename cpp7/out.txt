@@ -1,0 +1,18 @@
+Reversed initial string: 4 + 23
+Token: 4
+Out: 
+Ops: 
+
+Token: +
+Out: 4 
+Ops: 
+
+Token: 23
+Out: 4 
+Ops: + 
+
+Moving operations to main stack.
+Result: 4 23 + 
+Reversing back.
+Final result: + 32 4
+32 + 4 = 36

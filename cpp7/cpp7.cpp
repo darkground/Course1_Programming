@@ -172,7 +172,7 @@ void polishNotation(string& inpt_str, ofstream& ofs) {
 	print("Reversed initial string: " + inp + "\n", cout, ofs);
 	string outp = reversePolishNotation(inp, ofs);
 	reverse(outp.begin(), outp.end());
-	print("Reversing back.\nFinal result:" + outp + "\n", cout, ofs);
+	print("Reversing back.\nFinal result: " + outp + "\n", cout, ofs);
 }
 
 int computeRpn(string& rpn, ofstream& ofs, bool inverted = false, bool silent = false) {

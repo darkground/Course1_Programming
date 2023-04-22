@@ -84,17 +84,19 @@ void print(string str, ostream& os1, ostream& os2) {
 	os2 << str;
 }
 
-string reversePolishNotation(string& inpt_str, ofstream& ofs) {
+string reversePolishNotation(string& inpt_str, ofstream& ofs, bool silent = false) {
 	string current_str;
     vector<string> str_tokens = tokenize(inpt_str);
 	StackNode* outStack = NULL;
     StackNode* opStack = NULL;
 	for (const auto& token : str_tokens) {
-		print("Token: " + token + "\nOut: ", cout, ofs);
-		stackPrint(outStack, cout); stackPrint(outStack, ofs);
-		print("\nOps: ", cout, ofs);
-		stackPrint(opStack, cout); stackPrint(opStack, ofs);
-		print("\n\n", cout, ofs);
+		if (!silent) {
+			print("Token: " + token + "\nOut: ", cout, ofs);
+			stackPrint(outStack, cout); stackPrint(outStack, ofs);
+			print("\nOps: ", cout, ofs);
+			stackPrint(opStack, cout); stackPrint(opStack, ofs);
+			print("\n\n", cout, ofs);
+		}
 		if (isNumber(token))
 			stackAdd(outStack, token);
 		else if (isOperation(token)) {
@@ -122,29 +124,37 @@ string reversePolishNotation(string& inpt_str, ofstream& ofs) {
 				stackPushBack(opStack, token);
 		}
 		else {
-			auto found = variables.find(token);
-			if (found == variables.end()) {
-				print("Enter value for " + token + ": ", cout, ofs);
-				int var = readValue<int>();
-				ofs << var << endl;
-				variables[token] = var;
-				stackAdd(outStack, to_string(var));
+			if (silent) {
+				stackAdd(outStack, "1");
 			} else {
-				stackAdd(outStack, to_string(found->second));
+				auto found = variables.find(token);
+				if (found == variables.end()) {
+					print("Enter value for " + token + ": ", cout, ofs);
+					int var = readValue<int>();
+					ofs << var << endl;
+					variables[token] = var;
+					stackAdd(outStack, to_string(var));
+				} else {
+					stackAdd(outStack, to_string(found->second));
+				}
 			}
 		}
 	}
-	print("Moving operations to main stack.\n", cout, ofs);
+	if (!silent)
+		print("Moving operations to main stack.\n", cout, ofs);
 	while (opStack)
 		stackPushBack(outStack, stackTake(opStack));
-	print("Result: ", cout, ofs);
-	stackPrint(outStack, cout); stackPrint(outStack, ofs);
-	print("\n", cout, ofs);
+	if (!silent) {
+		print("Result: ", cout, ofs);
+		stackPrint(outStack, cout); stackPrint(outStack, ofs);
+		print("\n", cout, ofs);
+	}
 	string outp;
 	while (outStack) {
 		outp += outStack->value + ' ';
 		outStack = outStack->next;
 	}
+	outp.pop_back();
 	return outp;
 }
 
@@ -165,7 +175,7 @@ void polishNotation(string& inpt_str, ofstream& ofs) {
 	print("Reversing back.\nFinal result:" + outp + "\n", cout, ofs);
 }
 
-int computeRpn(string& rpn, ofstream& ofs, bool inverted = false) {
+int computeRpn(string& rpn, ofstream& ofs, bool inverted = false, bool silent = false) {
 	istringstream reader(rpn);
 	StackNode* outStack = NULL;
 	string token;
@@ -188,27 +198,33 @@ int computeRpn(string& rpn, ofstream& ofs, bool inverted = false) {
 			
 			switch (token[0]) {
 				case '+':
-					print(to_string(left) + " + " + to_string(right) + " = " + to_string(left + right) + '\n', cout, ofs);
+					if (!silent)
+						print(to_string(left) + " + " + to_string(right) + " = " + to_string(left + right) + '\n', cout, ofs);
 					stackAdd(outStack, to_string(left + right));
 					break;
-				case '-': 
-					print(to_string(left) + " - " + to_string(right) + " = " + to_string(left - right) + '\n', cout, ofs);
+				case '-':
+					if (!silent) 
+						print(to_string(left) + " - " + to_string(right) + " = " + to_string(left - right) + '\n', cout, ofs);
 					stackAdd(outStack, to_string(left - right));
 					break;
-				case '/': 
-					print(to_string(left) + " / " + to_string(right) + " = " + to_string(left / right) + '\n', cout, ofs);
+				case '/':
+					if (!silent) 
+						print(to_string(left) + " / " + to_string(right) + " = " + to_string(left / right) + '\n', cout, ofs);
 					stackAdd(outStack, to_string(left / right));
 					break;
-				case '*': 
-					print(to_string(left) + " * " + to_string(right) + " = " + to_string(left * right) + '\n', cout, ofs);
+				case '*':
+					if (!silent) 
+						print(to_string(left) + " * " + to_string(right) + " = " + to_string(left * right) + '\n', cout, ofs);
 					stackAdd(outStack, to_string(left * right));
 					break;
-				case '^': 
-					print(to_string(left) + " ^ " + to_string(right) + " = " + to_string((int)pow(left, right)) + '\n', cout, ofs);
+				case '^':
+					if (!silent) 
+						print(to_string(left) + " ^ " + to_string(right) + " = " + to_string((int)pow(left, right)) + '\n', cout, ofs);
 					stackAdd(outStack, to_string(pow(left, right)));
 					break;
 				default:
-					throw "Unknown operator " + token;
+					string errt = "Unknown operator " + token;
+					throw errt.c_str();
 			}
 		}
 	}
@@ -217,14 +233,14 @@ int computeRpn(string& rpn, ofstream& ofs, bool inverted = false) {
 	return stoi(stackPop(outStack));
 }
 
-int computePn(string& rpn, ofstream& ofs) {
+int computePn(string& rpn, ofstream& ofs, bool silent = false) {
 	vector<string> tokens = tokenize(rpn);
 	reverse(tokens.begin(), tokens.end());
 	string rev;
 	for(const auto& token : tokens)
 		rev += token + ' ';
 	rev.pop_back();
-	return computeRpn(rev, ofs, true);
+	return computeRpn(rev, ofs, true, silent);
 }
 
 int main()
@@ -237,8 +253,11 @@ int main()
             "0. Exit\n"
             "1. Convert expression into polish notation\n"
             "2. Convert expression into reverse polish notation\n"
-            "3. Compute expression given in polish notation\n"
-            "4. Compute expression given in reverse polish notation\n\n";
+			"3. Validate mathematical expression\n"
+			"4. Validate polish notation expression\n"
+			"5. Validate reverse polish notation expression\n"
+            "6. Compute expression given in polish notation\n"
+            "7. Compute expression given in reverse polish notation\n\n";
         int choice = readValue<int>("Type a number to continue: ");
         cout << endl;
         switch (choice) {
@@ -268,6 +287,43 @@ int main()
 				break;
 			case 3: {
 				string inp;
+				cout << "Enter mathematical expression: ";
+				getline(cin, inp);
+				try {
+					string outp = reversePolishNotation(inp, ofs, true);
+					computeRpn(outp, ofs, false, true);
+					cout << "Expression is valid.\n";
+				} catch (...) {
+					cout << "Expression is invalid!" << endl;
+				}
+			}
+				break;
+			case 4: {
+				string inp;
+				cout << "Enter polish notation expression: ";
+				getline(cin, inp);
+				try {
+					computePn(inp, ofs, true);
+					cout << "Expression is valid.\n";
+				} catch (const char* data) {
+					cout << "Expression is invalid! " << data << endl;
+				}
+			}
+				break;
+			case 5: {
+				string inp;
+				cout << "Enter reverse polish notation expression: ";
+				getline(cin, inp);
+				try {
+					computeRpn(inp, ofs, false, true);
+					cout << "Expression is valid.\n";
+				} catch (const char* data) {
+					cout << "Expression is invalid! " << data << endl;
+				}
+			}
+				break;
+			case 6: {
+				string inp;
 				cout << "Enter polish notation expression: ";
 				getline(cin, inp);
 				try {
@@ -277,7 +333,7 @@ int main()
 				}
 			}
 				break;
-			case 4: {
+			case 7: {
 				string inp;
 				cout << "Enter reverse polish notation expression: ";
 				getline(cin, inp);

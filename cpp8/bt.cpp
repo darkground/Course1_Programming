@@ -31,14 +31,13 @@ int sizeBT(BTNode* root, int size_count) {
         return size_count;
 }
 
-void printBT(BTNode* node, const std::string& prefix, bool isLeft) {
-    if (node != NULL) {
-        std::cout << prefix;
-        std::cout << (isLeft ? "|->" : "'->" );
-        std::cout << node->value << std::endl;
-
-        printBT(node->left, prefix + (isLeft ? "|   " : "    "), true);
-        printBT(node->right, prefix + (isLeft ? "|   " : "    "), false);
+void printBT(BTNode* node, const std::string& rpf, const std::string& mpf, const std::string& lpf) {
+	if (node != NULL) {
+        if (node->right)
+            printBT(node->right, rpf + "  ", rpf + ".->", rpf + "| ");
+        std::cout << mpf << node->value << std::endl;
+        if (node->left)
+            printBT(node->left, lpf + "| ", lpf + "`->", lpf + "  ");
     }
 }
 

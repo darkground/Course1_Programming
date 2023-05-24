@@ -34,10 +34,10 @@ int sizeBT(BTNode* root, int size_count) {
 void printBT(BTNode* node, const std::string& rpf, const std::string& mpf, const std::string& lpf) {
 	if (node != NULL) {
         if (node->right)
-            printBT(node->right, rpf + "  ", rpf + ".->", rpf + "| ");
+            printBT(node->right, rpf + "   ", rpf + ".-->", rpf + "|  ");
         std::cout << mpf << node->value << std::endl;
         if (node->left)
-            printBT(node->left, lpf + "| ", lpf + "`->", lpf + "  ");
+            printBT(node->left, lpf + "|  ", lpf + "`-->", lpf + "   ");
     }
 }
 
@@ -54,6 +54,34 @@ BTNode* searchBT(int value, BTNode* root) {
     else return NULL;
 }
 
+BTNode* deleteBT(int key, BTNode* root) {
+    if (root == NULL)
+        return NULL;
+ 
+    if (key < root->value)
+        root->left = deleteBT(key, root->left);
+    else if (key > root->value)
+        root->right = deleteBT(key, root->right);
+    else {
+        if (root->left == NULL && root->right == NULL)
+            return NULL;
+        else if (root->left == NULL) {
+            BTNode* temp = root->right;
+            delete root;
+            return temp;
+        }
+        else if (root->right == NULL) {
+            BTNode* temp = root->left;
+            delete root;
+            return temp;
+        }
+        BTNode* temp = getMinBT(root->right);
+        root->value = temp->value;
+        root->right = deleteBT(temp->value, root->right);
+    }
+    return root;
+}
+
 void addBT(int value, BTNode*& root) {
     if (root == NULL)
         root = createBT(value);
@@ -61,7 +89,8 @@ void addBT(int value, BTNode*& root) {
         insertBT(value, root);
 }
 
-void insertBT(int value, BTNode* root) {                              
+void insertBT(int value, BTNode* root) {
+    if (!root) return;                            
     if (value < root->value)
     {
         if (root->left != NULL)
@@ -81,6 +110,28 @@ void insertBT(int value, BTNode* root) {
             root->right->left = NULL;
             root->right->right = NULL;
         }
+    }
+}
+
+void strBT(BTNode* root) {
+    if(root){
+        std::cout << root->value << ' ';
+        strBT(root->left);
+        strBT(root->right);
+    }
+}
+void revBT(BTNode* root) {
+    if(root){
+        revBT(root->left);
+        revBT(root->right);
+        std::cout << root->value << ' ';
+    }
+}
+void symBT(BTNode* root) {
+    if(root){
+        symBT(root->left);
+        std::cout << root->value << ' ';
+        symBT(root->right);
     }
 }
 

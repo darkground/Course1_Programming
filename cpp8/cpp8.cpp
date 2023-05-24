@@ -1,7 +1,9 @@
 ﻿#include <iostream>
+#include <chrono>
 #include "bt.h"
 
 using namespace std;
+using namespace chrono;
 
 /*
 *   Функция для ввода данных в терминал
@@ -30,11 +32,34 @@ T readValue(const char* prompt = "") {
     }
 }
 
+void walkBT(BTNode*& root) {
+    system("cls");
+    cout <<
+        "Walk:\n"
+        "1. Straight walk\n"
+        "2. Reverse walk\n"
+        "3. Symmetrical walk\n\n";
+    int choice = readValue<int>("Type a number to continue: ");
+    switch(choice) {
+        case 1:
+            strBT(root);
+            cout << endl;
+            break;
+        case 2:
+            revBT(root);
+            cout << endl;
+            break;
+        case 3:
+            symBT(root);
+            cout << endl;
+            break;
+    }
+}
+
 void fillBT(BTNode*& root) {
     system("cls");
     cout <<
         "Fill:\n"
-        "0. Back\n"
         "1. Create with random values\n"
         "2. Create with manual values\n\n";
     int choice = readValue<int>("Type a number to continue: ");
@@ -92,6 +117,39 @@ void bstmenu() {
             case 2:
                 printBT(bt);
                 break;
+            case 3: {
+                int n = readValue<int>("Input a number to insert: ");
+                auto t1 = steady_clock::now();
+                insertBT(n, bt);
+                auto t2 = steady_clock::now();
+                auto result = duration_cast<nanoseconds>(t2 - t1);
+                cout << "Inserted in " << result.count() << " nanoseconds." << endl;
+                break;
+            }
+            case 4: {
+                int n = readValue<int>("Input a number to delete: ");
+                auto t1 = steady_clock::now();
+                deleteBT(n, bt);
+                auto t2 = steady_clock::now();
+                auto result = duration_cast<nanoseconds>(t2 - t1);
+                cout << "Deleted in " << result.count() << " nanoseconds." << endl;
+                break;
+            }
+            case 5: {
+                int n = readValue<int>("Input a number to search: ");
+                auto t1 = steady_clock::now();
+                BTNode* node = searchBT(n, bt);
+                auto t2 = steady_clock::now();
+                auto result = duration_cast<nanoseconds>(t2 - t1);
+                if (node != NULL)
+                    cout << "Element found: " << node->value << " (" << result.count() << " nanoseconds)" << endl;
+                else
+                    cout << "Element not found (" << result.count() << " nanoseconds)" << endl;
+                break;
+            }
+            case 6:
+                walkBT(bt);
+                break;
             default:
                 cout << "\nCategory with number " << choice << " does not exist." << endl;
                 break;
@@ -102,6 +160,7 @@ void bstmenu() {
 
 int main()
 {
+    srand(time(NULL));
 	while (true) {
         system("cls");
         cout <<

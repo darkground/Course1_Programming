@@ -125,28 +125,28 @@ void destroyBT(BTNode* root) {
 }
 
 // Straight-walk: Прямой обход бинарного дерева
-void strBT(BTNode* root) {
+void strwBT(BTNode* root) {
     if(root){
         std::cout << root->value << ' ';
-        strBT(root->left);
-        strBT(root->right);
+        strwBT(root->left);
+        strwBT(root->right);
     }
 }
 
 // Reverse-walk: Обратный обход бинарного дерева
-void revBT(BTNode* root) {
+void revwBT(BTNode* root) {
     if(root){
-        revBT(root->left);
-        revBT(root->right);
+        revwBT(root->left);
+        revwBT(root->right);
         std::cout << root->value << ' ';
     }
 }
 
 // Symmetrical-walk: Симметричный обход бинарного дерева
-void symBT(BTNode* root) {
+void symwBT(BTNode* root) {
     if(root){
-        symBT(root->left);
+        symwBT(root->left);
         std::cout << root->value << ' ';
-        symBT(root->right);
+        symwBT(root->right);
     }
 }

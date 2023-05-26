@@ -1,4 +1,5 @@
 ﻿#include <iostream>
+#include <fstream>
 #include <chrono>
 #include "bt.h"
 #include "avl.h"
@@ -64,7 +65,8 @@ void fillBT(BTNode*& root) {
     cout <<
         "Fill:\n"
         "1. Create with random values\n"
-        "2. Create with manual values\n\n";
+        "2. Create with manual values\n"
+        "3. Read from file\n\n";
     int choice = readValue<int>("Type a number to continue: ");
     switch(choice) {
         case 1: {
@@ -90,6 +92,21 @@ void fillBT(BTNode*& root) {
             }
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            break;
+        }
+        case 3: {
+            destroyBT(root);
+            root = NULL;
+            int n = readValue<int>("Input N: ");
+            ifstream ifs("bt.txt");
+            if (ifs) {
+                for (int i = 0; i < n && !ifs.eof(); i++) {
+                    int inp;
+                    ifs >> inp;
+                    addBT(inp, root);
+                }
+                ifs.close();
+            }
             break;
         }
     }
@@ -123,7 +140,7 @@ void bstmenu() {
             case 3: {
                 int n = readValue<int>("Input a number to insert: ");
                 auto t1 = steady_clock::now();
-                insertBT(n, bt);
+                addBT(n, bt);
                 auto t2 = steady_clock::now();
                 auto result = duration_cast<nanoseconds>(t2 - t1);
                 cout << "Inserted in " << result.count() << " nanoseconds." << endl;
@@ -168,7 +185,8 @@ void fillAVL(AVLNode*& root) {
     cout <<
         "Fill:\n"
         "1. Create with random values\n"
-        "2. Create with manual values\n\n";
+        "2. Create with manual values\n"
+        "2. Create from file\n\n";
     int choice = readValue<int>("Type a number to continue: ");
     switch(choice) {
         case 1: {
@@ -194,6 +212,21 @@ void fillAVL(AVLNode*& root) {
             }
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            break;
+        }
+        case 3: {
+            destroyAVL(root);
+            root = NULL;
+            int n = readValue<int>("Input N: ");
+            ifstream ifs("bt.txt");
+            if (ifs) {
+                for (int i = 0; i < n && !ifs.eof(); i++) {
+                    int inp;
+                    ifs >> inp;
+                    addAVL(inp, root);
+                }
+                ifs.close();
+            }
             break;
         }
     }
@@ -226,7 +259,7 @@ void avlmenu() {
             case 3: {
                 int n = readValue<int>("Input a number to insert: ");
                 auto t1 = steady_clock::now();
-                avl = insertAVL(n, avl);
+                addAVL(n, avl);
                 auto t2 = steady_clock::now();
                 auto result = duration_cast<nanoseconds>(t2 - t1);
                 cout << "Inserted in " << result.count() << " nanoseconds." << endl;
@@ -269,7 +302,7 @@ int main()
 	while (true) {
         system("cls");
         cout <<
-            "Choose a category from below:\n"
+            "Choose tree type from below:\n"
             "0. Exit\n"
             "1. Binary Search Trees\n"
             "2. AVL Trees\n\n";

@@ -12,19 +12,17 @@ AVLNode* createAVL(int value) {
 }
 
 // Минимальный элемент в АВЛ-дереве 
-AVLNode* getMinAVL(AVLNode* node) {
-	AVLNode* current = node;
-	while (current->left)
-		current = current->left;
-	return current;
+AVLNode* getMinAVL(AVLNode* root) {
+	while (root->left)
+		root = root->left;
+	return root;
 }
 
 // Максимальный элемент в АВЛ-дереве
-AVLNode* getMaxAVL(AVLNode* node) {
-    AVLNode* current = node;
-	while (current->right)
-		current = current->right;
-	return current;
+AVLNode* getMaxAVL(AVLNode* root) {
+	while (root->right)
+		root = root->right;
+	return root;
 }
 
 // Размер АВЛ-дерева
@@ -37,13 +35,13 @@ int sizeAVL(AVLNode* root, int size_count) {
 }
 
 // Вывод АВЛ-дерева в указанный ostream
-void printAVL(AVLNode* node, const std::string& rpf, const std::string& mpf, const std::string& lpf, std::ostream& os) {
-	if (node != NULL) {
-        if (node->right)
-            printAVL(node->right, rpf + "   ", rpf + ".-->", rpf + "|  ", os);
-        std::cout << mpf << node->value << std::endl;
-        if (node->left)
-            printAVL(node->left, lpf + "|  ", lpf + "`-->", lpf + "   ", os);
+void printAVL(AVLNode* root, const std::string& rpf, const std::string& mpf, const std::string& lpf, std::ostream& os) {
+	if (root != NULL) {
+        if (root->right)
+            printAVL(root->right, rpf + "   ", rpf + ".-->", rpf + "|  ", os);
+        std::cout << mpf << root->value << std::endl;
+        if (root->left)
+            printAVL(root->left, lpf + "|  ", lpf + "`-->", lpf + "   ", os);
     }
 }
 
@@ -62,22 +60,22 @@ AVLNode* searchAVL(int value, AVLNode* root) {
 // Удаление элемента из АВЛ-дерева
 AVLNode* deleteAVL(int value, AVLNode* root) {
 	if (root == NULL)
-		return root;
+		return NULL;
 
 	if (value < root->value)
 		root->left = deleteAVL(value, root->left);
 	else if (value > root->value)
 		root->right = deleteAVL(value, root->right);
 	else {
-        if (root->left == NULL && root->right == NULL) { // Нет потомков
+        if (root->left == NULL && root->right == NULL)
             root = NULL;
-        } else if (root->left == NULL || root->right == NULL) { // Один потомок
+        else if (root->left == NULL || root->right == NULL)
             root = root->left ? root->left : root->right;
-        } else { // Два потомка
-			AVLNode* minnode = getMinAVL(root->right);
-			root->value = minnode->value;
-			root->right = deleteAVL(minnode->value, root->right);
-		}
+        else {
+            AVLNode* minnode = getMinAVL(root->right);
+            root->value = minnode->value;
+            root->right = deleteAVL(minnode->value, root->right);
+        }
 	}
 
     return root ? balanceAVL(root) : NULL;

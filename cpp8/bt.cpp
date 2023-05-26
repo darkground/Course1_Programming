@@ -34,13 +34,13 @@ int sizeBT(BTNode* root, int size_count) {
 }
 
 // Вывод бинарного дерева в указанный ostream
-void printBT(BTNode* node, const std::string& rpf, const std::string& mpf, const std::string& lpf, std::ostream& os) {
-	if (node != NULL) {
-        if (node->right)
-            printBT(node->right, rpf + "   ", rpf + ".-->", rpf + "|  ", os);
-        std::cout << mpf << node->value << std::endl;
-        if (node->left)
-            printBT(node->left, lpf + "|  ", lpf + "`-->", lpf + "   ", os);
+void printBT(BTNode* root, const std::string& rpf, const std::string& mpf, const std::string& lpf, std::ostream& os) {
+	if (root != NULL) {
+        if (root->right)
+            printBT(root->right, rpf + "   ", rpf + ".-->", rpf + "|  ", os);
+        std::cout << mpf << root->value << std::endl;
+        if (root->left)
+            printBT(root->left, lpf + "|  ", lpf + "`-->", lpf + "   ", os);
     }
 }
 
@@ -59,31 +59,26 @@ BTNode* searchBT(int value, BTNode* root) {
 }
 
 // Удаление элемента из бинарного дерева
-BTNode* deleteBT(int key, BTNode* root) {
+BTNode* deleteBT(int value, BTNode* root) {
     if (root == NULL)
         return NULL;
  
-    if (key < root->value)
-        root->left = deleteBT(key, root->left);
-    else if (key > root->value)
-        root->right = deleteBT(key, root->right);
+    if (value < root->value)
+        root->left = deleteBT(value, root->left);
+    else if (value > root->value)
+        root->right = deleteBT(value, root->right);
     else {
         if (root->left == NULL && root->right == NULL)
-            return NULL;
-        else if (root->left == NULL) {
-            BTNode* temp = root->right;
-            delete root;
-            return temp;
+            root = NULL;
+        else if (root->left == NULL || root->right == NULL)
+            root = root->left ? root->left : root->right;
+        else {
+            BTNode* minnode = getMinBT(root->right);
+            root->value = minnode->value;
+            root->right = deleteBT(minnode->value, root->right);
         }
-        else if (root->right == NULL) {
-            BTNode* temp = root->left;
-            delete root;
-            return temp;
-        }
-        BTNode* temp = getMinBT(root->right);
-        root->value = temp->value;
-        root->right = deleteBT(temp->value, root->right);
     }
+
     return root;
 }
 

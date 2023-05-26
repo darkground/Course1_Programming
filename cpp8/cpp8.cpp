@@ -7,6 +7,8 @@
 using namespace std;
 using namespace chrono;
 
+const int TREE_NODES_IN_TASKS = 5;
+
 /*
 *   Функция для ввода данных в терминал
 *   При вызове функции нужно указать получаемые данные в скобках,
@@ -112,6 +114,51 @@ void fillBT(BTNode*& root) {
     }
 }
 
+void makeTasksBT() {
+    int n = readValue<int>("How much tasks do you need? ");
+    ofstream ofs_task("input_tasks.txt", std::ios::app);
+    ofstream ofs_ans("output_ans.txt", std::ios::app);
+    for(int i = 1; i <= n; i++) {
+        ofs_task << "Task #" << i << ".\n";
+        ofs_ans << "Answers to " << "Task #" << i << ".\n";
+        ofs_task << " a) Make a binary search tree from following numbers:";
+        BTNode* bt = NULL;
+        int numToDelete = rand() % 200 - 99;
+        for(int i = 0; i < TREE_NODES_IN_TASKS; i++) {
+            int x = rand() % 200 - 99;
+            addBT(x, bt);
+            if (rand() % 10 > 6)
+                numToDelete = x;
+            ofs_task << ' ' << x;
+        }
+        ofs_task << '\n';
+        ofs_ans << " a)\n";
+        printBT(bt, ofs_ans);
+
+        int y = rand() % 200 - 99;
+        ofs_task << " b) Insert " << y << " into tree from chapter A\n";
+        addBT(y, bt);
+        ofs_ans << "\n b)\n";
+        printBT(bt, ofs_ans);
+
+        ofs_task << " c) Delete " << numToDelete << " from tree from chapter B if number is in tree\n";
+        deleteBT(numToDelete, bt);
+        ofs_ans << " c)\n";
+        printBT(bt, ofs_ans);
+        
+        int z = rand() % 200 - 99;
+        ofs_task << " d) Check if " << z << " is in tree from chapter C\n";
+        ofs_ans << " d)";
+        if (searchBT(numToDelete, bt) != NULL)
+            ofs_ans << " Number exists\n";
+        else
+            ofs_ans << " Number does not exist\n";
+        ofs_ans << "\n\n";
+        ofs_task << "\n\n";
+        destroyBT(bt);
+    }
+}
+
 void bstmenu() {
     BTNode* bt = NULL;
     while (true) {
@@ -135,7 +182,7 @@ void bstmenu() {
                 fillBT(bt);
                 break;
             case 2:
-                printBT(bt);
+                printBT(bt, cout);
                 break;
             case 3: {
                 int n = readValue<int>("Input a number to insert: ");
@@ -170,6 +217,9 @@ void bstmenu() {
             case 6:
                 walkBT(bt);
                 break;
+            case 7:
+                makeTasksBT();
+                break;
             default:
                 cout << "\nCategory with number " << choice << " does not exist." << endl;
                 break;
@@ -179,6 +229,52 @@ void bstmenu() {
 }
 
 // - AVL --------------------------------------------------------------
+
+void makeTasksAVL() {
+    int n = readValue<int>("How much tasks do you need? ");
+    ofstream ofs_task("input_tasks.txt", std::ios::app);
+    ofstream ofs_ans("output_ans.txt", std::ios::app);
+    for(int i = 1; i <= n; i++) {
+        ofs_task << "Task #" << i << ".\n";
+        ofs_ans << "Answers to " << "Task #" << i << ".\n";
+        ofs_task << " a) Make an AVL tree from following numbers:";
+        AVLNode* avl = NULL;
+        int numToDelete = rand() % 200 - 99;
+        for(int i = 0; i < TREE_NODES_IN_TASKS; i++) {
+            int x = rand() % 200 - 99;
+            addAVL(x, avl);
+            if (rand() % 10 > 6)
+                numToDelete = x;
+            ofs_task << ' ' << x;
+        }
+        ofs_task << '\n';
+        ofs_ans << " a)\n";
+        printAVL(avl, ofs_ans);
+
+        int y = rand() % 200 - 99;
+        ofs_task << " b) Insert " << y << " into tree from chapter A\n";
+        addAVL(y, avl);
+        ofs_ans << "\n b)\n";
+        printAVL(avl, ofs_ans);
+
+        ofs_task << " c) Delete " << numToDelete << " from tree from chapter B if number is in tree\n";
+        deleteAVL(numToDelete, avl);
+        ofs_ans << " c)\n";
+        printAVL(avl, ofs_ans);
+        
+        int z = rand() % 200 - 99;
+        ofs_task << " d) Check if " << z << " is in tree from chapter C\n";
+        ofs_ans << " d)";
+        if (searchAVL(numToDelete, avl) != NULL)
+            ofs_ans << " Number exists\n";
+        else
+            ofs_ans << " Number does not exist\n";
+        ofs_ans << "\n\n";
+        ofs_task << "\n\n";
+        destroyAVL(avl);
+    }
+}
+
 
 void fillAVL(AVLNode*& root) {
     system("cls");
@@ -254,7 +350,7 @@ void avlmenu() {
                 fillAVL(avl);
                 break;
             case 2:
-                printAVL(avl);
+                printAVL(avl, cout);
                 break;
             case 3: {
                 int n = readValue<int>("Input a number to insert: ");
@@ -286,6 +382,9 @@ void avlmenu() {
                     cout << "Element not found (" << result.count() << " nanoseconds)" << endl;
                 break;
             }
+            case 6:
+                makeTasksAVL();
+                break;
             default:
                 cout << "\nCategory with number " << choice << " does not exist." << endl;
                 break;

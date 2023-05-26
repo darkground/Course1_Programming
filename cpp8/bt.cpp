@@ -34,13 +34,13 @@ int sizeBT(BTNode* root, int size_count) {
 }
 
 // Вывод бинарного дерева в указанный ostream
-void printBT(BTNode* root, const std::string& rpf, const std::string& mpf, const std::string& lpf, std::ostream& os) {
+void printBT(BTNode* root, std::ostream& os, const std::string& rpf, const std::string& mpf, const std::string& lpf) {
 	if (root != NULL) {
         if (root->right)
-            printBT(root->right, rpf + "   ", rpf + ".-->", rpf + "|  ", os);
-        std::cout << mpf << root->value << std::endl;
+            printBT(root->right, os, rpf + "   ", rpf + ".-->", rpf + "|  ");
+        os << mpf << root->value << std::endl;
         if (root->left)
-            printBT(root->left, lpf + "|  ", lpf + "`-->", lpf + "   ", os);
+            printBT(root->left, os, lpf + "|  ", lpf + "`-->", lpf + "   ");
     }
 }
 

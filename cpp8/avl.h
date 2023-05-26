@@ -12,7 +12,7 @@ AVLNode* getMaxAVL(AVLNode* node);
 AVLNode* deleteAVL(int value, AVLNode* root);
 AVLNode* insertAVL(int value, AVLNode* root);
 void destroyAVL(AVLNode* root);
-void printAVL(AVLNode* node, const std::string& rpf = "", const std::string& mpf = "", const std::string& lpf = "", std::ostream& os = std::cout);
+void printAVL(AVLNode* node, std::ostream& os, const std::string& rpf = "", const std::string& mpf = "", const std::string& lpf = "");
 void addAVL(int value, AVLNode*& root);
 int sizeAVL(AVLNode* root, int size_count = 0);
 void strwAVL(AVLNode* root);

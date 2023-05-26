@@ -1,6 +1,7 @@
 #include <iostream>
 #include "avl.h"
 
+// Создать АВЛ-дерево
 AVLNode* createAVL(int value) {
 	AVLNode* root = new AVLNode;
 	root->left = NULL;
@@ -10,6 +11,7 @@ AVLNode* createAVL(int value) {
 	return root;
 }
 
+// Минимальный элемент в АВЛ-дереве 
 AVLNode* getMinAVL(AVLNode* node) {
 	AVLNode* current = node;
 	while (current->left)
@@ -17,6 +19,7 @@ AVLNode* getMinAVL(AVLNode* node) {
 	return current;
 }
 
+// Максимальный элемент в АВЛ-дереве
 AVLNode* getMaxAVL(AVLNode* node) {
     AVLNode* current = node;
 	while (current->right)
@@ -24,6 +27,7 @@ AVLNode* getMaxAVL(AVLNode* node) {
 	return current;
 }
 
+// Размер АВЛ-дерева
 int sizeAVL(AVLNode* root, int size_count) {
 	if (root) {
 		size_count++;
@@ -32,6 +36,7 @@ int sizeAVL(AVLNode* root, int size_count) {
         return size_count;
 }
 
+// Вывод АВЛ-дерева в указанный ostream
 void printAVL(AVLNode* node, const std::string& rpf, const std::string& mpf, const std::string& lpf) {
 	if (node != NULL) {
         if (node->right)
@@ -42,6 +47,7 @@ void printAVL(AVLNode* node, const std::string& rpf, const std::string& mpf, con
     }
 }
 
+// Поиск в АВЛ-дереве значения
 AVLNode* searchAVL(int value, AVLNode* root) {
     if (root != nullptr) {
         if (value == root->value)
@@ -53,6 +59,7 @@ AVLNode* searchAVL(int value, AVLNode* root) {
     } else return NULL;
 }
 
+// Удаление элемента из АВЛ-дерева
 AVLNode* deleteAVL(int value, AVLNode* root) {
 	if (root == NULL)
 		return root;
@@ -76,6 +83,7 @@ AVLNode* deleteAVL(int value, AVLNode* root) {
     return root ? balanceAVL(root) : NULL;
 }
 
+// Добавить значение в АВЛ-дерево
 void addAVL(int value, AVLNode*& root) {
     if (root == NULL)
         root = createAVL(value);
@@ -83,6 +91,7 @@ void addAVL(int value, AVLNode*& root) {
         root = insertAVL(value, root);
 }
 
+// Добавить значение в АВЛ-дерево (root != null)
 AVLNode* insertAVL(int value, AVLNode* root) {
 	if(!root) {
         root = new AVLNode;
@@ -99,6 +108,7 @@ AVLNode* insertAVL(int value, AVLNode* root) {
 	return balanceAVL(root);
 }
 
+// Уничтожить АВЛ-дерево
 void destroyAVL(AVLNode* root) {
     if(root!=NULL) {
         destroyAVL(root->left);
@@ -107,6 +117,7 @@ void destroyAVL(AVLNode* root) {
     }
 }
 
+// Straight-walk: Прямой обход АВЛ-дерева
 void strwAVL(AVLNode* root) {
     if(root){
         std::cout << root->value << ' ';
@@ -114,6 +125,8 @@ void strwAVL(AVLNode* root) {
         strwAVL(root->right);
     }
 }
+
+// Reverse-walk: Обратный обход АВЛ-дерева
 void revwAVL(AVLNode* root) {
     if(root){
         revwAVL(root->left);
@@ -121,6 +134,8 @@ void revwAVL(AVLNode* root) {
         std::cout << root->value << ' ';
     }
 }
+
+// Symmetrical-walk: Симметричный обход АВЛ-дерева
 void symwAVL(AVLNode* root) {
     if(root){
         symwAVL(root->left);
@@ -129,20 +144,24 @@ void symwAVL(AVLNode* root) {
     }
 }
 
+// Получить высоту АВЛ-узла (если узел == null, высота равна 0)
 int heightAVL(AVLNode* node) {
 	return node == NULL ? 0 : node->height;
 }
 
+// Получить фактор сбалансированности АВЛ-узла (если узел == null, фактор равен 0)
 int bfactorAVL(AVLNode* node) {
 	return node == NULL ? 0 : (heightAVL(node->right) - heightAVL(node->left));
 }
 
+// Пересчитать высоту АВЛ-узла и записать в node->height
 void recalcHeightAVL(AVLNode* node) {
     int hl = heightAVL(node->left);
 	int hr = heightAVL(node->right);
 	node->height = (hl>hr ? hl : hr) + 1;
 }
 
+// Малое правое вращение
 AVLNode* rotrightAVL(AVLNode* node)
 {
     AVLNode* ltree = node->left;
@@ -157,6 +176,7 @@ AVLNode* rotrightAVL(AVLNode* node)
     return ltree;
 }
 
+// Малое левое вращение
 AVLNode* rotleftAVL(AVLNode* node)
 {
     AVLNode* rtree = node->right;
@@ -171,6 +191,7 @@ AVLNode* rotleftAVL(AVLNode* node)
     return rtree;
 }
 
+// Сбалансировать узел
 AVLNode* balanceAVL(AVLNode* node) {
 	recalcHeightAVL(node);
 

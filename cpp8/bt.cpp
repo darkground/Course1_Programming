@@ -1,6 +1,7 @@
 #include <iostream>
 #include "bt.h"
 
+// Создать бинарное дерево
 BTNode* createBT(int value) {
 	BTNode* root = new BTNode;
 	root->left = NULL;
@@ -9,20 +10,21 @@ BTNode* createBT(int value) {
 	return root;
 }
 
+// Минимальный элемент в бинарном дереве 
 BTNode* getMinBT(BTNode* root) {
-	while (root->left) {
+	while (root->left)
 		root = root->left;
-	}
 	return root;
 }
 
+// Максимальный элемент в бинарном дереве
 BTNode* getMaxBT(BTNode* root) {
-	while (root->right) {
+	while (root->right)
 		root = root->right;
-	}
 	return root;
 }
 
+// Размер бинарного дерева
 int sizeBT(BTNode* root, int size_count) {
 	if (root) {
 		size_count++;
@@ -31,6 +33,7 @@ int sizeBT(BTNode* root, int size_count) {
         return size_count;
 }
 
+// Вывод бинарного дерева в указанный ostream
 void printBT(BTNode* node, const std::string& rpf, const std::string& mpf, const std::string& lpf) {
 	if (node != NULL) {
         if (node->right)
@@ -41,6 +44,7 @@ void printBT(BTNode* node, const std::string& rpf, const std::string& mpf, const
     }
 }
 
+// Поиск в бинарном дереве значения
 BTNode* searchBT(int value, BTNode* root) {
     if (root != nullptr)
     {
@@ -54,6 +58,7 @@ BTNode* searchBT(int value, BTNode* root) {
     else return NULL;
 }
 
+// Удаление элемента из бинарного дерева
 BTNode* deleteBT(int key, BTNode* root) {
     if (root == NULL)
         return NULL;
@@ -82,6 +87,7 @@ BTNode* deleteBT(int key, BTNode* root) {
     return root;
 }
 
+// Добавить значение в бинарное дерево
 void addBT(int value, BTNode*& root) {
     if (root == NULL)
         root = createBT(value);
@@ -89,6 +95,7 @@ void addBT(int value, BTNode*& root) {
         insertBT(value, root);
 }
 
+// Добавить значение в бинарное дерево (root != null)
 void insertBT(int value, BTNode* root) {
     if (!root) return;                            
     if (value < root->value)
@@ -113,6 +120,16 @@ void insertBT(int value, BTNode* root) {
     }
 }
 
+// Уничтожить бинарное дерево
+void destroyBT(BTNode* root) {
+    if(root!=NULL) {
+        destroyBT(root->left);
+        destroyBT(root->right);
+        delete root;
+    }
+}
+
+// Straight-walk: Прямой обход бинарного дерева
 void strBT(BTNode* root) {
     if(root){
         std::cout << root->value << ' ';
@@ -120,6 +137,8 @@ void strBT(BTNode* root) {
         strBT(root->right);
     }
 }
+
+// Reverse-walk: Обратный обход бинарного дерева
 void revBT(BTNode* root) {
     if(root){
         revBT(root->left);
@@ -127,18 +146,12 @@ void revBT(BTNode* root) {
         std::cout << root->value << ' ';
     }
 }
+
+// Symmetrical-walk: Симметричный обход бинарного дерева
 void symBT(BTNode* root) {
     if(root){
         symBT(root->left);
         std::cout << root->value << ' ';
         symBT(root->right);
-    }
-}
-
-void destroyBT(BTNode* root) {
-    if(root!=NULL) {
-        destroyBT(root->left);
-        destroyBT(root->right);
-        delete root;
     }
 }

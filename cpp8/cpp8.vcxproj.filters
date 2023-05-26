@@ -21,9 +21,15 @@
     <ClCompile Include="bt.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="avl.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bt.h">
+      <Filter>Исходные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="avl.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
   </ItemGroup>

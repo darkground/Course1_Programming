@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <chrono>
 #include "bt.h"
+#include "avl.h"
 
 using namespace std;
 using namespace chrono;
@@ -32,6 +33,8 @@ T readValue(const char* prompt = "") {
     }
 }
 
+// - BT --------------------------------------------------------------
+
 void walkBT(BTNode*& root) {
     system("cls");
     cout <<
@@ -42,15 +45,15 @@ void walkBT(BTNode*& root) {
     int choice = readValue<int>("Type a number to continue: ");
     switch(choice) {
         case 1:
-            strBT(root);
+            strwBT(root);
             cout << endl;
             break;
         case 2:
-            revBT(root);
+            revwBT(root);
             cout << endl;
             break;
         case 3:
-            symBT(root);
+            symwBT(root);
             cout << endl;
             break;
     }
@@ -158,6 +161,108 @@ void bstmenu() {
     }
 }
 
+// - AVL --------------------------------------------------------------
+
+void fillAVL(AVLNode*& root) {
+    system("cls");
+    cout <<
+        "Fill:\n"
+        "1. Create with random values\n"
+        "2. Create with manual values\n\n";
+    int choice = readValue<int>("Type a number to continue: ");
+    switch(choice) {
+        case 1: {
+            destroyAVL(root);
+            root = NULL;
+            int n = readValue<int>("Input N: ");
+            for(int i = 0; i < n; i++){
+                int r = rand() % 200 - 99;
+                addAVL(r, root);
+            }
+            break;
+        }
+        case 2: {
+            destroyAVL(root);
+            root = NULL;
+            cout << "Input numbers line by line, finish by typing any non-digit character (e.g. \"a\").\n";
+            int val;
+            while (true) {
+                cin >> val;
+                if (cin.fail())
+                    break;
+                addAVL(val, root);
+            }
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            break;
+        }
+    }
+}
+
+void avlmenu() {
+    AVLNode* avl = NULL;
+    while (true) {
+        system("cls");
+        cout <<
+            "AVL Trees - Choose a category from below:\n"
+            "0. Back\n"
+            "1. Create AVL\n"
+            "2. Print AVL Tree\n"
+            "3. Insert element into BST\n"
+            "4. Delete element from BST\n"
+            "5. Find element in BST\n"
+            "6. Task generation\n\n";
+        int choice = readValue<int>("Type a number to continue: ");
+        cout << endl;
+        switch (choice) {
+            case 0:
+                return;
+			case 1:
+                fillAVL(avl);
+                break;
+            case 2:
+                printAVL(avl);
+                break;
+            case 3: {
+                int n = readValue<int>("Input a number to insert: ");
+                auto t1 = steady_clock::now();
+                avl = insertAVL(n, avl);
+                auto t2 = steady_clock::now();
+                auto result = duration_cast<nanoseconds>(t2 - t1);
+                cout << "Inserted in " << result.count() << " nanoseconds." << endl;
+                break;
+            }
+            case 4: {
+                int n = readValue<int>("Input a number to delete: ");
+                auto t1 = steady_clock::now();
+                avl = deleteAVL(n, avl);
+                auto t2 = steady_clock::now();
+                auto result = duration_cast<nanoseconds>(t2 - t1);
+                cout << "Deleted in " << result.count() << " nanoseconds." << endl;
+                break;
+            }
+            case 5: {
+                int n = readValue<int>("Input a number to search: ");
+                auto t1 = steady_clock::now();
+                AVLNode* node = searchAVL(n, avl);
+                auto t2 = steady_clock::now();
+                auto result = duration_cast<nanoseconds>(t2 - t1);
+                if (node != NULL)
+                    cout << "Element found: " << node->value << " (" << result.count() << " nanoseconds)" << endl;
+                else
+                    cout << "Element not found (" << result.count() << " nanoseconds)" << endl;
+                break;
+            }
+            default:
+                cout << "\nCategory with number " << choice << " does not exist." << endl;
+                break;
+        }
+        system("pause");
+    }
+}
+
+// -     --------------------------------------------------------------
+
 int main()
 {
     srand(time(NULL));
@@ -176,6 +281,8 @@ int main()
 			case 1:
                 bstmenu();
                 break;
+            case 2:
+                avlmenu();
             default:
                 cout << "\nCategory with number " << choice << " does not exist." << endl;
                 break;

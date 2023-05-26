@@ -14,7 +14,7 @@ BTNode* getMaxBT(BTNode* root);
 BTNode* deleteBT(int key, BTNode* root);
 void insertBT(int key, BTNode* root);
 void destroyBT(BTNode* root);
-void printBT(BTNode* node, const std::string& rpf = "", const std::string& mpf = "", const std::string& lpf = "");
+void printBT(BTNode* node, const std::string& rpf = "", const std::string& mpf = "", const std::string& lpf = "", std::ostream& = std::cout);
 void addBT(int value, BTNode*& root);
 int sizeBT(BTNode* root, int size_count = 0);
 void strBT(BTNode* root);

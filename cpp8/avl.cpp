@@ -37,13 +37,13 @@ int sizeAVL(AVLNode* root, int size_count) {
 }
 
 // Вывод АВЛ-дерева в указанный ostream
-void printAVL(AVLNode* node, const std::string& rpf, const std::string& mpf, const std::string& lpf) {
+void printAVL(AVLNode* node, const std::string& rpf, const std::string& mpf, const std::string& lpf, std::ostream& os) {
 	if (node != NULL) {
         if (node->right)
-            printAVL(node->right, rpf + "   ", rpf + ".-->", rpf + "|  ");
+            printAVL(node->right, rpf + "   ", rpf + ".-->", rpf + "|  ", os);
         std::cout << mpf << node->value << std::endl;
         if (node->left)
-            printAVL(node->left, lpf + "|  ", lpf + "`-->", lpf + "   ");
+            printAVL(node->left, lpf + "|  ", lpf + "`-->", lpf + "   ", os);
     }
 }
 

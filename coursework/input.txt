@@ -1,0 +1,1 @@
+Sample input  for   program    to     read. ContAINS1   1234 Ll123!! nuMBERS!!! Triple... dots.

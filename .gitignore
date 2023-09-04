@@ -1,0 +1,6 @@
+.vs
+.vscode
+x64/
+cpp8/bt.txt
+cpp8/input_tasks.txt
+cpp8/output_ans.txt
